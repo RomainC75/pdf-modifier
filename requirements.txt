@@ -1,0 +1,7 @@
+numpy
+pandas
+scipy
+opencv-python
+pytesseract
+PyPDF2
+pdf2image
