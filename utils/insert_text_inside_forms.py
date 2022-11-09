@@ -1,10 +1,13 @@
 import pdfrw
 from datetime import date
+from dotenv import dotenv_values
+config = dotenv_values(".env")
 
-pdf_template = "folder/Doc.pdf"
-pdf_output = "folder/output.pdf"
+DOCS_FOLDER = config['DOCS_FOLDER']
+TEMP_FOLDER = config['TEMP_FOLDER']
 
-template_pdf = pdfrw.PdfReader(pdf_template) 
+pdf_template = DOCS_FOLDER+"doc_empty.pdf"
+pdf_output = TEMP_FOLDER+"folder/output.pdf"
 
 ANNOT_KEY = '/Annots'
 ANNOT_FIELD_KEY = '/T'
@@ -36,7 +39,10 @@ data_dict = {
 }
 
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
+
+def fill_pdf(input_name, output_name):
+    input_pdf_path = DOCS_FOLDER+input_name
+    output_pdf_path = TEMP_FOLDER+output_name
     template_pdf = pdfrw.PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page[ANNOT_KEY]
@@ -44,7 +50,7 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
             if annotation[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
                 if annotation[ANNOT_FIELD_KEY]:
                     key = annotation[ANNOT_FIELD_KEY][1:-1]
-                    print(key)
+                    # print(key)
                     if key in data_dict.keys():
                         if type(data_dict[key]) == bool:
                             if data_dict[key] == True:
@@ -57,6 +63,6 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
                             annotation.update(pdfrw.PdfDict(AP=''))
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
                 
-print("==>date", date.today())
+# print("==>date", date.today())
 
-fill_pdf(pdf_template, pdf_output, data_dict)
+fill_pdf("doc_empty.pdf", "temp.pdf")

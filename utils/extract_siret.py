@@ -6,7 +6,7 @@ import os
 from pdf2image import convert_from_path
 from dotenv import dotenv_values
 
-config = dotenv_values("../.env")
+config = dotenv_values(".env")
 
 DOCS_FOLDER= config["DOCS_FOLDER"]
 TEMP_FOLDER = config["TEMP_FOLDER"]
