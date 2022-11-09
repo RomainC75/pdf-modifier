@@ -1,9 +1,11 @@
 # install PyMuPDF
 import fitz
+from dotenv import dotenv_values
+config = dotenv_values("../.env") 
 
-DOCS_FOLDER='../data/docs/'
-OUTPUT_FOLDER = '../data/output/'
-STAMP_FOLDER = '../data/stamps/'
+DOCS_FOLDER = config['DOCS_FOLDER']
+OUTPUT_FOLDER = config['OUTPUT_FOLDER']
+STAMP_FOLDER = config['STAMP_FOLDER']
 
 def insert_image(file_handle):
     signature = STAMP_FOLDER+"signature.png"

@@ -4,6 +4,12 @@ import numpy as np
 import re
 import os
 from pdf2image import convert_from_path
+from dotenv import dotenv_values
+
+config = dotenv_values("../.env")
+
+DOCS_FOLDER= config["DOCS_FOLDER"]
+TEMP_FOLDER = config["TEMP_FOLDER"]
 
 def convert_first_page_to_image(path_to_empty_pdf):
     doc = convert_from_path(path_to_empty_pdf)
@@ -11,9 +17,9 @@ def convert_first_page_to_image(path_to_empty_pdf):
     fileBaseName, fileExtension = os.path.splitext(fileName)
     #write down first page
     page_to_analyse = doc[0]
-    page_to_analyse.save('temp.jpg', 'JPEG')
+    page_to_analyse.save(TEMP_FOLDER+'temp.jpg', 'JPEG')
 
-def select_rectangle_and_change_images(img):
+def select_rectangle_and_change_colors(img):
     cv2.imshow('img', img)
     startP=(230,670)
     endP=(755,730)
@@ -22,17 +28,14 @@ def select_rectangle_and_change_images(img):
     cv2.imwrite('selection.jpg', siret_morphed)
     return siret_morphed
 
-def extract_siret_as_string(path_to_empty_pdf):
+def extract_siret_as_string(emptypdf_name):
+    pdf_path = DOCS_FOLDER+emptypdf_name
     # convert and create "temp.jpg"
-    convert_first_page_to_image(path_to_empty_pdf)
+    convert_first_page_to_image(pdf_path)
     
-    img = cv2.imread('temp.jpg')
+    img = cv2.imread(TEMP_FOLDER+'temp.jpg')
 
-    siret_morphed = select_rectangle_and_change_images(img)
-    # tried to filter the gray color
-    # lower = np.array([220,220,220], dtype="uint8")  
-    # upper = np.array([230,230,230], dtype="uint8")  
-    # siret_filtered = cv2.inRange(siret_morphed, lower, upper)
+    siret_morphed = select_rectangle_and_change_colors(img)
     
     txt = pytesseract.image_to_string(siret_morphed).encode("utf-8")
     txt = txt.decode('ascii')
@@ -41,5 +44,4 @@ def extract_siret_as_string(path_to_empty_pdf):
     print("siret : ", siret_string)
     return siret_string
 
-
-# extract_siret_as_string('../docs/doc_empty.pdf')
+extract_siret_as_string('doc_empty.pdf')
