@@ -6,7 +6,7 @@ import os
 from pdf2image import convert_from_path
 from dotenv import dotenv_values
 
-config = dotenv_values(".env")
+config = dotenv_values(".env.folders")
 
 DOCS_FOLDER= config["DOCS_FOLDER"]
 TEMP_FOLDER = config["TEMP_FOLDER"]
@@ -44,4 +44,4 @@ def extract_siret_as_string(emptypdf_name):
     print("siret : ", siret_string)
     return siret_string
 
-extract_siret_as_string('doc_empty.pdf')
+# extract_siret_as_string('doc_empty.pdf')

@@ -1,10 +1,10 @@
 # install PyMuPDF
 import fitz
 from dotenv import dotenv_values
-config = dotenv_values(".env") 
+config = dotenv_values(".env.folders") 
 
+DOCS_FOLDER = config['DOCS_FOLDER']
 TEMP_FOLDER = config['TEMP_FOLDER']
-OUTPUT_FOLDER = config['OUTPUT_FOLDER']
 STAMP_FOLDER = config['STAMP_FOLDER']
 
 def insert_image(file_handle):
@@ -31,12 +31,13 @@ def insert_image(file_handle):
 def insert_siret_on_every_pages(siret_str, file_handle):
     p=fitz.Point(500,20)
     for page in file_handle:
+        print("page : ", page)
         page.insert_text(p, siret_str, color=(1,0,0))
 
 
 def insert_images_and_siret(siret_str, input_name, output_name):
-    input_file=TEMP_FOLDER+input_name
-    output_file = OUTPUT_FOLDER+output_name
+    input_file=DOCS_FOLDER+input_name
+    output_file = TEMP_FOLDER+output_name
 
     print(siret_str, input_file, output_file)
     file_handle = fitz.open(input_file)

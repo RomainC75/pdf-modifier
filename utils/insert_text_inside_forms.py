@@ -1,13 +1,13 @@
 import pdfrw
 from datetime import date
 from dotenv import dotenv_values
-config = dotenv_values(".env")
+config = dotenv_values(".env.folders")
 
-DOCS_FOLDER = config['DOCS_FOLDER']
 TEMP_FOLDER = config['TEMP_FOLDER']
+OUTPUT_FOLDER = config['OUTPUT_FOLDER']
 
-pdf_template = DOCS_FOLDER+"doc_empty.pdf"
-pdf_output = TEMP_FOLDER+"folder/output.pdf"
+pdf_template = TEMP_FOLDER+"doc_empty.pdf"
+pdf_output = OUTPUT_FOLDER+"folder/output.pdf"
 
 ANNOT_KEY = '/Annots'
 ANNOT_FIELD_KEY = '/T'
@@ -41,8 +41,8 @@ data_dict = {
 
 
 def fill_pdf(input_name, output_name):
-    input_pdf_path = DOCS_FOLDER+input_name
-    output_pdf_path = TEMP_FOLDER+output_name
+    input_pdf_path = TEMP_FOLDER+input_name
+    output_pdf_path = OUTPUT_FOLDER+output_name
     template_pdf = pdfrw.PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page[ANNOT_KEY]
@@ -62,7 +62,8 @@ def fill_pdf(input_name, output_name):
                             )
                             annotation.update(pdfrw.PdfDict(AP=''))
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
+    
                 
 # print("==>date", date.today())
 
-fill_pdf("doc_empty.pdf", "temp.pdf")
+# fill_pdf("doc_empty.pdf", "temp.pdf")
