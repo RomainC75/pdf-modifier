@@ -25,7 +25,7 @@ def select_rectangle_and_change_colors(img):
     endP=(755,730)
     siret_rect = img[startP[1]:endP[1], startP[0]:endP[0] ]
     siret_morphed = cv2.cvtColor(siret_rect, cv2.COLOR_BGR2GRAY)
-    cv2.imwrite('selection.jpg', siret_morphed)
+    cv2.imwrite(TEMP_FOLDER+'selection.jpg', siret_morphed)
     return siret_morphed
 
 def extract_siret_as_string(emptypdf_name):
