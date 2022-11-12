@@ -51,7 +51,7 @@ def select_rectangle_and_change_colors(img):
     img_final_inversion = cv2.bitwise_not(img_black_filtered)
 
     # img_final_inversion = cv2.GaussianBlur(img_final_inversion,(5,5),0)
-    img_final_inversion = cv2.blur(img_final_inversion,(5,5))
+    img_final_inversion = cv2.blur(img_final_inversion,(5,5),0)
 
     # cv2.imshow("raw", img_raw)
     # cv2.imshow("mask", blackColorMask)
@@ -74,7 +74,7 @@ def select_rectangle_and_change_colors(img):
     cv2.imwrite(TEMP_FOLDER+'selection.jpg', img_final_inversion)
 
 
-    return img_changing
+    return img_final_inversion
 
 def extract_secu_as_string(emptypdf_name):
     pdf_path = DOCS_FOLDER+emptypdf_name
