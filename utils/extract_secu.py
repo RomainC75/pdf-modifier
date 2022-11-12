@@ -20,12 +20,13 @@ TEMP_FOLDER = config["TEMP_FOLDER"]
 
 
 def convert_first_page_to_image_and_save_to_tempFile(path_to_empty_pdf):
-    doc = convert_from_path(path_to_empty_pdf, dpi=400)
+    first_page = convert_from_path(path_to_empty_pdf, dpi=600, first_page=1, last_page=1)
     # path, fileName = os.path.split(path_to_empty_pdf)
     # fileBaseName, fileExtension = os.path.splitext(fileName)
     #write down first page
-    page_to_analyse = doc[0]
-    page_to_analyse.save(TEMP_FOLDER+'temp.jpg', 'JPEG')
+    
+    
+    first_page[0].save(TEMP_FOLDER+'temp.jpg', 'JPEG')
 
 
 def select_rectangle_and_change_colors(img):
@@ -33,30 +34,36 @@ def select_rectangle_and_change_colors(img):
     # startP=(230,670)
     # endP=(755,730)
     
-    startP=(780,3750)
-    endP=(1800,3900)
+    startP=(1180,5650)
+    endP=(2650,5800)
     img_raw = img[startP[1]:endP[1], startP[0]:endP[0] ]
     # print(filter(lambda triad:triad[0][0]!=255, secu_rect))
     
+
+
     img_hsv = cv2.cvtColor(img_raw, cv2.COLOR_BGR2HSV)
     img_changing = cv2.cvtColor(img_raw, cv2.COLOR_RGB2GRAY)
     low_color = np.array([0, 0, 0])
     high_color = np.array([180, 255, 30])
     blackColorMask = cv2.inRange(img_hsv, low_color, high_color)
-    img_black_filtered = cv2.bitwise_and(img_changing, img_changing, mask = blackColorMask)
-    
+    img_inversion = cv2.bitwise_not(img_changing)
+    img_black_filtered = cv2.bitwise_and(img_inversion, img_inversion, mask = blackColorMask)
+    img_final_inversion = cv2.bitwise_not(img_black_filtered)
+
+    # img_final_inversion = cv2.GaussianBlur(img_final_inversion,(5,5),0)
+    # img_final_inversion = cv2.blur(img_final_inversion,(5,5))
+
     # cv2.imshow("raw", img_raw)
     # cv2.imshow("mask", blackColorMask)
     # cv2.imshow("changing :", img_changing)
     # cv2.imshow("filterd : ", img_black_filtered)
+    # cv2.imshow("negatif : ", img_inversion)
+    # cv2.imshow("final ? ", img_final_inversion)
 
     img_copy=img_raw.copy()
     img_canny = cv2.Canny(img_copy, 180, 200, apertureSize=3)
 
-    # img_hough = cv2.HoughLinesP(img_canny, 1, math.pi / 180, 100, minLineLength = 100, maxLineGap = 10)
-    # cv2.imshow("hough : ", img_hough)
-    # (x, y, w, h) = (np.amin(img_hough, axis = 0)[0,0], np.amin(img_hough, axis = 0)[0,1], np.amax(img_hough, axis = 0)[0,0] - np.amin(img_hough, axis = 0)[0,0], np.amax(img_hough, axis = 0)[0,1] - np.amin(img_hough, axis = 0)[0,1])
-    # img_roi = img_copy[y:y+h,x:x+w]
+    
 
     # secu_morphed = cv2.cvtColor(secu_rect, cv2.COLOR_BGR2GRAY)
     # secu_morphed = cv2.GaussianBlur(secu_morphed,(5,5),0)
@@ -64,7 +71,7 @@ def select_rectangle_and_change_colors(img):
 
     
     
-    cv2.imwrite(TEMP_FOLDER+'selection.jpg', img_raw)
+    cv2.imwrite(TEMP_FOLDER+'selection.jpg', img_final_inversion)
 
 
     return img_changing
