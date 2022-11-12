@@ -34,7 +34,7 @@ def select_rectangle_and_change_colors(img):
     # startP=(230,670)
     # endP=(755,730)
     
-    startP=(1180,5650)
+    startP=(1180,5620)
     endP=(2650,5800)
     img_raw = img[startP[1]:endP[1], startP[0]:endP[0] ]
     # print(filter(lambda triad:triad[0][0]!=255, secu_rect))
@@ -51,7 +51,7 @@ def select_rectangle_and_change_colors(img):
     img_final_inversion = cv2.bitwise_not(img_black_filtered)
 
     # img_final_inversion = cv2.GaussianBlur(img_final_inversion,(5,5),0)
-    # img_final_inversion = cv2.blur(img_final_inversion,(5,5))
+    img_final_inversion = cv2.blur(img_final_inversion,(5,5))
 
     # cv2.imshow("raw", img_raw)
     # cv2.imshow("mask", blackColorMask)
