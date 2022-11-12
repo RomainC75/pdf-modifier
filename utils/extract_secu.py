@@ -51,7 +51,7 @@ def select_rectangle_and_change_colors(img):
     img_final_inversion = cv2.bitwise_not(img_black_filtered)
 
     # img_final_inversion = cv2.GaussianBlur(img_final_inversion,(5,5),0)
-    img_final_inversion = cv2.blur(img_final_inversion,(5,5),0)
+    img_final_inversion = cv2.blur(img_final_inversion,(9,9),0)
 
     # cv2.imshow("raw", img_raw)
     # cv2.imshow("mask", blackColorMask)
