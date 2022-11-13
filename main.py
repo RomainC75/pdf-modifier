@@ -38,14 +38,14 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
     pathFilename = path.split(pdfPath)
     siret, lastname, firstname = get_infos_from_filename(pathFilename[1])
     print(siret,lastname, firstname)
-    secu_string=extract_secu_as_string(pathFilename[1])
-    if len(secu_string)!=13 and len(secu_string)!=15:
-        print("Secu number : wrong length : ", secu_string, len(secu_string))
-        errors+=1
+    insert_images_and_siret([siret,lastname,firstname], pathFilename[1], "temp.pdf")
+    fill_pdf( "temp.pdf", pathFilename[1] ) 
+    # secu_string=extract_secu_as_string(pathFilename[1])
+    # if len(secu_string)!=13 and len(secu_string)!=15:
+    #     print("Secu number : wrong length : ", secu_string, len(secu_string))
+    #     errors+=1
+
 
 
 print("errors : ",errors)
-#extract
-# siret = extract_siret_as_string("doc_empty.pdf")
-# insert_images_and_siret(siret, "doc_empty.pdf", "temp.pdf")
-# fill_pdf("temp.pdf","output.pdf")
+
