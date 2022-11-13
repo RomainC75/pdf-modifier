@@ -31,7 +31,6 @@ def insert_image(file_handle):
 def insert_siret_on_every_pages(data_txt, file_handle):
     p=fitz.Point(550,20)
     for page in file_handle:
-        print("page : ", page)
         for index, info in enumerate(data_txt):
             page.insert_text((p[0],p[1]+index*10) , info, color=(0,0,0),fontsize=5)
 
@@ -39,12 +38,9 @@ def insert_siret_on_every_pages(data_txt, file_handle):
 def insert_images_and_siret(data_txt, input_name, output_name):
     input_file=DOCS_FOLDER+input_name
     output_file = TEMP_FOLDER+output_name
-
-    print(data_txt, input_file, output_file)
     file_handle = fitz.open(input_file)
     insert_siret_on_every_pages(data_txt, file_handle)
     insert_image(file_handle)
-
-    file_handle.save(output_file)
+    file_handle.save(output_file,garbage=3, deflate=True)
 
 # insert_images_and_siret("83825502400021","doc_empty.pdf","withSiret.pdf")

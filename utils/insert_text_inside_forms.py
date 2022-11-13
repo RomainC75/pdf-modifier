@@ -62,8 +62,5 @@ def fill_pdf(input_name, output_name):
                             )
                             annotation.update(pdfrw.PdfDict(AP=''))
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
-    
-                
-# print("==>date", date.today())
 
 # fill_pdf("doc_empty.pdf", "temp.pdf")
