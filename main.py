@@ -9,23 +9,23 @@ from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, ins
 
 #test working folders 
 config = dotenv_values(".env.folders")
-def print_error(path):
+def handle_error(path):
     print("==> Error :")
     print(f"{path} doesn't exist !")
-    exit()
+    raise FileNotFoundError
+
 #test folders and files
 if not path.exists("./data"):
-    print_error("./data")
+    handle_error("./data")
 
 for (key,subfolder) in config.items():
     if not path.exists(subfolder):
-        print_error(subfolder)
+        handle_error(subfolder)
 
 stamps = ["signature.png", "stamp.png"]
 for stamp_filename in stamps:
     if not path.exists(config["STAMP_FOLDER"]+stamp_filename):
-        print_error(config["STAMP_FOLDER"]+stamp_filename)
-
+        handle_error(config["STAMP_FOLDER"]+stamp_filename)
 
 errors=0
 
@@ -41,8 +41,7 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
 
     siret, lastname, firstname = get_infos_from_filename(pathFilename[1])
     print(siret,lastname, firstname)
-    insert_images_and_siret([secu_string,siret,lastname,firstname], pathFilename[1], "temp.pdf")
+    insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
     fill_pdf( "temp.pdf", pathFilename[1] ) 
     
 print("errors : ",errors)
-

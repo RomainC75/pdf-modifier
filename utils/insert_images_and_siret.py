@@ -29,10 +29,14 @@ def insert_image(file_handle):
 
 
 def insert_siret_on_every_pages(data_txt, file_handle):
-    p=fitz.Point(550,20)
-    for page in file_handle:
-        for index, info in enumerate(data_txt):
-            page.insert_text((p[0],p[1]+index*10) , info, color=(0,0,0),fontsize=5)
+    # p=fitz.Point(550,20)
+    p=fitz.Point(228,157)
+
+    full_str = f'{data_txt[0]}, {data_txt[1]} {data_txt[2]}'
+    file_handle[0].insert_text( (p[0],p[1]) , full_str, color=(0,0,0),fontsize=6)
+    # for page in file_handle:
+    #     for index, info in enumerate(data_txt):
+    #         page.insert_text((p[0],p[1]+index*10) , info, color=(0,0,0),fontsize=5)
 
 
 def insert_images_and_siret(data_txt, input_name, output_name):

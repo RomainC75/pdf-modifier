@@ -54,13 +54,11 @@ def fill_pdf(input_name, output_name):
                     if key in data_dict.keys():
                         if type(data_dict[key]) == bool:
                             if data_dict[key] == True:
-                                annotation.update(pdfrw.PdfDict(
-                                    AS=pdfrw.PdfName('Yes')))
+                                annotation.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true'),AS=pdfrw.PdfName('Yes')))
                         else:
-                            annotation.update(
-                                pdfrw.PdfDict(V='{}'.format(data_dict[key]))
-                            )
+                            annotation.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true'),V='{}'.format(data_dict[key])))
                             annotation.update(pdfrw.PdfDict(AP=''))
+    template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
 
 # fill_pdf("doc_empty.pdf", "temp.pdf")

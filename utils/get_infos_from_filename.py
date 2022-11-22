@@ -6,8 +6,5 @@ def get_infos_from_filename(filename):
     #     "siret":matches.group(1),
     #     "lastname":matches.group(2),
     #     "firstname":matches.group(3),
-
     # }
     return (matches.group(1),matches.group(2),matches.group(3))
-    
-    
