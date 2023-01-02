@@ -1,4 +1,5 @@
 import re
+from os import mkdir
 
 def get_infos_from_filename(filename):
     try:
@@ -7,7 +8,15 @@ def get_infos_from_filename(filename):
         #     "siret":matches.group(1),
         #     "lastname":matches.group(2),
         #     "firstname":matches.group(3),
+        #     "date"
         # }
-        return (matches.group(1),matches.group(2),matches.group(3),matches.group(5))
+        return (matches.group(1),matches.group(2).capitalize(),matches.group(3).capitalize(),matches.group(5))
     except:
         print('===>error : ', filename)
+
+def create_folder(path):
+    try:
+        mkdir(path)
+    except:
+        pass
+

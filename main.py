@@ -6,7 +6,11 @@ from dotenv import dotenv_values
 from tqdm import tqdm
 
 # from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
-from utils import SecuExtractor, PdfHandler, get_infos_from_filename
+from utils import SecuExtractor, PdfHandler, get_infos_from_filename, create_folder
+
+SIRET_CONVERTOR ={
+    '49320424200017':'LACHOPE'
+}
 
 #test working folders 
 config = dotenv_values(".env.folders")
@@ -39,12 +43,22 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
 
         #society folder
         #person folder
-        
+
         siret, lastname, firstname, date = get_infos_from_filename(pathFilename[1])
         print(siret, lastname, firstname, date)
-        
 
-        pdfhandler = PdfHandler(siret, firstname, lastname, date, "doc_empty.pdf", sign_last_day_of_month=True)
+        society_name = SIRET_CONVERTOR[siret]
+        month = date[2:4]
+        year = date[4:]
+        society_folder = f'{config["OUTPUT_FOLDER"]}/{society_name}_AER_{month}_{year}'
+        worker_folder = f'{society_folder}/{lastname}_{firstname}'
+        print('=====§§§§§§ ',society_folder, worker_folder)
+        
+        create_folder(society_folder)
+        create_folder(worker_folder)
+
+        
+        pdfhandler = PdfHandler(SIRET_CONVERTOR[siret], firstname, lastname, date, "doc_empty.pdf", sign_last_day_of_month=True)
         pdfhandler.insert_images_and_siret()
         pdfhandler.fill_pdf()
     except:

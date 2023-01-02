@@ -22,9 +22,7 @@ OUTPUT_FOLDER = config['OUTPUT_FOLDER']
 # pdf_template = TEMP_FOLDER+"doc_empty.pdf"
 # pdf_output = OUTPUT_FOLDER+"folder/output.pdf"
 
-SIRET_CONVERTOR ={
-    '49320424200017':'LACHOPE'
-}
+
 
 class PdfHandler:
     def __init__( self, \
@@ -37,7 +35,7 @@ class PdfHandler:
 
         self.base_pdf = base_pdf
         self.output_temp_name = 'temp.pdf'
-        self.output_file_name = f'{SIRET_CONVERTOR[siret]}_AER_{last_name}_{first_name}_{contract_start_date}.pdf'
+        self.output_file_name = f'{siret}_AER_{last_name}_{first_name}_{contract_start_date}.pdf'
 
         self.sign_last_day_of_month=sign_last_day_of_month
         self.sign_day = None
