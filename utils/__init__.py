@@ -1,4 +1,7 @@
 from utils.get_infos_from_filename import get_infos_from_filename
-from utils.extract_secu import extract_secu_as_string
+from utils.old.extract_secu import extract_secu_as_string
 from utils.insert_images_and_siret import insert_images_and_siret
 from utils.insert_text_inside_forms import fill_pdf
+
+
+from utils.extract_secu import Secu_extractor

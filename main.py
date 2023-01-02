@@ -5,7 +5,8 @@ from glob import glob
 from dotenv import dotenv_values
 from tqdm import tqdm
 
-from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
+# from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
+from utils import Secu_extractor
 
 #test working folders 
 config = dotenv_values(".env.folders")
@@ -30,18 +31,21 @@ for stamp_filename in stamps:
 errors=0
 
 #get every files names to work on
-pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
-for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
-    pathFilename = path.split(pdfPath)
+# pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
+# for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
+#     pathFilename = path.split(pdfPath)
     
-    secu_string=extract_secu_as_string(pathFilename[1])
-    if len(secu_string)!=13 and len(secu_string)!=15:
-        print("Secu number : wrong length : ", secu_string, len(secu_string))
-        errors+=1
+#     secu_string=extract_secu_as_string(pathFilename[1])
+#     if len(secu_string)!=13 and len(secu_string)!=15:
+#         print("Secu number : wrong length : ", secu_string, len(secu_string))
+#         errors+=1
 
-    siret, lastname, firstname = get_infos_from_filename(pathFilename[1])
-    print(siret,lastname, firstname)
-    insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
-    fill_pdf( "temp.pdf", pathFilename[1] ) 
+#     siret, lastname, firstname = get_infos_from_filename(pathFilename[1])
+#     print(siret,lastname, firstname)
+#     insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
+#     fill_pdf( "temp.pdf", pathFilename[1] ) 
     
 print("errors : ",errors)
+
+secu_extractor = Secu_extractor('doc_empty.pdf')
+extracted = secu_extractor.extract_secu_as_string()
