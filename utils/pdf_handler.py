@@ -30,12 +30,14 @@ class PdfHandler:
             first_name:str, \
             last_name:str, \
             contract_start_date:str, \
+            worker_folder:str, \
             base_pdf:str, \
             sign_last_day_of_month=True ) -> None:
 
         self.base_pdf = base_pdf
         self.output_temp_name = 'temp.pdf'
         self.output_file_name = f'{siret}_AER_{last_name}_{first_name}_{contract_start_date}.pdf'
+        self.worker_folder = worker_folder
 
         self.sign_last_day_of_month=sign_last_day_of_month
         self.sign_day = None
@@ -55,7 +57,7 @@ class PdfHandler:
         self.insert_siret_on_first_page(file_handle)
         self.insert_image(file_handle)
         file_handle.save(output_file,garbage=3, deflate=True)
-        self.raise_random_error()
+        
 
 
     def insert_siret_on_first_page(self, file_handle) -> None:
@@ -122,8 +124,9 @@ class PdfHandler:
 
 
     def fill_pdf(self):
+        print('?? fill_pdf ??')
         input_pdf_path = TEMP_FOLDER+self.output_temp_name
-        output_pdf_path = OUTPUT_FOLDER+self.output_file_name
+        output_pdf_path = self.worker_folder+'/'+self.output_file_name
         print('output : ', output_pdf_path)
         template_pdf = pdfrw.PdfReader(input_pdf_path)
         data_dict = self.get_data_dict()

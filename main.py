@@ -41,9 +41,6 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         pathFilename = path.split(pdfPath)
         print('0 : ',pathFilename[0])
 
-        #society folder
-        #person folder
-
         siret, lastname, firstname, date = get_infos_from_filename(pathFilename[1])
         print(siret, lastname, firstname, date)
 
@@ -52,15 +49,16 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         year = date[4:]
         society_folder = f'{config["OUTPUT_FOLDER"]}/{society_name}_AER_{month}_{year}'
         worker_folder = f'{society_folder}/{lastname}_{firstname}'
-        print('=====§§§§§§ ',society_folder, worker_folder)
+        
         
         create_folder(society_folder)
         create_folder(worker_folder)
-
         
-        pdfhandler = PdfHandler(SIRET_CONVERTOR[siret], firstname, lastname, date, "doc_empty.pdf", sign_last_day_of_month=True)
+        
+        pdfhandler = PdfHandler(SIRET_CONVERTOR[siret], firstname, lastname, date, worker_folder, "doc_empty.pdf", sign_last_day_of_month=True)
         pdfhandler.insert_images_and_siret()
         pdfhandler.fill_pdf()
+        print('=====§§§§§§ ',society_folder, worker_folder)
     except:
         error_file_names.append(pdfPath)
 
