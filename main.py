@@ -1,4 +1,4 @@
-from os import path
+from os import path, mkdir
 import re
 from time import sleep
 from glob import glob
@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 from tqdm import tqdm
 
 # from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
-from utils import SecuExtractor, PdfHandler
+from utils import SecuExtractor, PdfHandler, get_infos_from_filename
 
 #test working folders 
 config = dotenv_values(".env.folders")
@@ -28,7 +28,54 @@ for stamp_filename in stamps:
     if not path.exists(config["STAMP_FOLDER"]+stamp_filename):
         handle_error(config["STAMP_FOLDER"]+stamp_filename)
 
-errors=0
+error_file_names = []
+
+#get every files names to work on
+pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
+for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
+    try:
+        pathFilename = path.split(pdfPath)
+        print('0 : ',pathFilename[0])
+
+        #society folder
+        #person folder
+        
+        siret, lastname, firstname, date = get_infos_from_filename(pathFilename[1])
+        print(siret, lastname, firstname, date)
+        
+
+        pdfhandler = PdfHandler(siret, firstname, lastname, date, "doc_empty.pdf", sign_last_day_of_month=True)
+        pdfhandler.insert_images_and_siret()
+        pdfhandler.fill_pdf()
+    except:
+        error_file_names.append(pdfPath)
+
+print(f'Errors : {len(error_file_names)}')
+if len(error_file_names)>0:
+    for name in error_file_names:
+        print(f'==>{name}')
+    print(f'go to the folder /errors to handle these files separatly')
+
+
+#     print(siret,lastname, firstname)
+#     insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
+#     fill_pdf( "temp.pdf", pathFilename[1] ) 
+    
+
+
+
+# print("errors : ",errors)
+# try:
+#     pdfhandler = PdfHandler("Bob","Sinclar","doc_empty.pdf","withSiret.pdf", sign_last_day_of_month=True )
+#     # pdfhandler = PdfHandler("doc_empty.pdf","withSiret.pdf")
+#     pdfhandler.insert_images_and_siret()
+#     print('===')
+#     pdfhandler.fill_pdf()
+# except :
+#     print('import error')
+
+
+
 
 #get every files names to work on
 # pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
@@ -44,15 +91,4 @@ errors=0
 #     print(siret,lastname, firstname)
 #     insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
 #     fill_pdf( "temp.pdf", pathFilename[1] ) 
-    
-print("errors : ",errors)
-
-
-pdfhandler = PdfHandler("Bob","Sinclar","doc_empty.pdf","withSiret.pdf")
-# pdfhandler = PdfHandler("doc_empty.pdf","withSiret.pdf")
-pdfhandler.insert_images_and_siret()
-print('===')
-pdfhandler.fill_pdf()
-
-# res = pdfhandler.get_date_of_today_or_last_day()
 

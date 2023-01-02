@@ -5,7 +5,7 @@ import fitz
 from dotenv import dotenv_values
 config = dotenv_values(".env.folders") 
 from utils import SecuExtractor
-
+import random
 
 ANNOT_KEY = '/Annots'
 ANNOT_FIELD_KEY = '/T'
@@ -22,33 +22,50 @@ OUTPUT_FOLDER = config['OUTPUT_FOLDER']
 # pdf_template = TEMP_FOLDER+"doc_empty.pdf"
 # pdf_output = OUTPUT_FOLDER+"folder/output.pdf"
 
+SIRET_CONVERTOR ={
+    '49320424200017':'LACHOPE'
+}
 
 class PdfHandler:
-    def __init__(self, first_name:str, last_name:str, empty_pdf:str, output_file_name:str) -> None:
-        self.empty_pdf = empty_pdf
+    def __init__( self, \
+            siret:str, \
+            first_name:str, \
+            last_name:str, \
+            contract_start_date:str, \
+            base_pdf:str, \
+            sign_last_day_of_month=True ) -> None:
+
+        self.base_pdf = base_pdf
         self.output_temp_name = 'temp.pdf'
-        self.output_file_name = output_file_name
-        self.sign_last_day_of_month=True
+        self.output_file_name = f'{SIRET_CONVERTOR[siret]}_AER_{last_name}_{first_name}_{contract_start_date}.pdf'
+
+        self.sign_last_day_of_month=sign_last_day_of_month
         self.sign_day = None
-        self.secuExtractor = SecuExtractor(self.empty_pdf)
+        self.secuExtractor = SecuExtractor(self.base_pdf)
         self.extracted_secu = self.secuExtractor.extract_secu_as_string()
+
         self.first_name = first_name
         self.last_name = last_name
+        self.contract_start_date = contract_start_date
+        
+
 
     def insert_images_and_siret(self) -> None:
-        input_file=DOCS_FOLDER+self.empty_pdf
+        input_file=DOCS_FOLDER+self.base_pdf
         output_file = TEMP_FOLDER+self.output_temp_name
         file_handle = fitz.open(input_file)
         self.insert_siret_on_first_page(file_handle)
         self.insert_image(file_handle)
         file_handle.save(output_file,garbage=3, deflate=True)
-        print('--', output_file)
+        self.raise_random_error()
+
 
     def insert_siret_on_first_page(self, file_handle) -> None:
         # p=fitz.Point(550,20)
         p=fitz.Point(228,157)
         full_str = f'{self.extracted_secu}, {self.first_name} {self.last_name}'
         file_handle[0].insert_text( (p[0],p[1]) , full_str, color=(0,0,0),fontsize=6)
+
 
     def insert_image(self, file_handle):
         signature = STAMP_FOLDER+"signature.png"
@@ -86,7 +103,7 @@ class PdfHandler:
             'month' : str(today_date.month) if today_date.month>=10 else '0'+str(today_date.month),
             'year' : today_date.year
         }
-        
+
 
     def get_data_dict(self):
         self.get_date_of_today_or_last_day()
@@ -105,6 +122,7 @@ class PdfHandler:
         }
         return data_dict
 
+
     def fill_pdf(self):
         input_pdf_path = TEMP_FOLDER+self.output_temp_name
         output_pdf_path = OUTPUT_FOLDER+self.output_file_name
@@ -117,8 +135,7 @@ class PdfHandler:
                 if annotation[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
                     if annotation[ANNOT_FIELD_KEY]:
                         key = annotation[ANNOT_FIELD_KEY][1:-1]
-                        # print(key)
-                        
+                        # print(key)                        
                         if key in data_dict.keys():
                             if type(data_dict[key]) == bool:
                                 if data_dict[key] == True:
@@ -129,5 +146,10 @@ class PdfHandler:
         template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
         pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
         print('done')
+
+
+    def raise_random_error():
+        if random.randint(0,1)==1:
+            raise SyntaxError('error')
 
 # insert_images_and_siret("83825502400021","doc_empty.pdf","withSiret.pdf")
