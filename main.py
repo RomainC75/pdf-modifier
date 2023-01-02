@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 from tqdm import tqdm
 
 # from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
-from utils import SecuExtractor
+from utils import SecuExtractor, PdfHandler
 
 #test working folders 
 config = dotenv_values(".env.folders")
@@ -47,5 +47,8 @@ errors=0
     
 print("errors : ",errors)
 
-secu_extractor = SecuExtractor('doc_empty.pdf')
-extracted = secu_extractor.extract_secu_as_string()
+# secu_extractor = SecuExtractor('doc_empty.pdf')
+# extracted = secu_extractor.extract_secu_as_string()
+
+pdfhandler = PdfHandler(["83825502400021","Bob","Sinclar"],"doc_empty.pdf","withSiret.pdf")
+pdfhandler.insert_images_and_siret()
