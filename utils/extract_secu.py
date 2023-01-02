@@ -29,17 +29,19 @@ class SecuExtractor:
         return secu_morphed
 
     def extract_secu_as_string(self):
-        
-        self.convert_first_page_to_image()
-        img = cv2.imread(TEMP_FOLDER+'temp.jpg')
-        secu_morphed = self.select_rectangle_and_change_colors(img)
+        try:
+            self.convert_first_page_to_image()
+            img = cv2.imread(TEMP_FOLDER+'temp.jpg')
+            secu_morphed = self.select_rectangle_and_change_colors(img)
 
-        txt = pytesseract.image_to_string(secu_morphed).encode("utf-8")
+            txt = pytesseract.image_to_string(secu_morphed).encode("utf-8")
 
-        txt_decode = txt.decode('utf-8')
-        secu = re.findall(r"[0-9]*",txt_decode)
-        secu_string = "".join(secu)
-        print("n° SECU  : ", secu_string)
-        return secu_string
+            txt_decode = txt.decode('utf-8')
+            secu = re.findall(r"[0-9]*",txt_decode)
+            secu_string = "".join(secu)
+            print("n° SECU  : ", secu_string)
+            return secu_string
+        except :
+            raise ImportError('could not extract SECU number')
 
 

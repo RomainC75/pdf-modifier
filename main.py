@@ -47,8 +47,12 @@ errors=0
     
 print("errors : ",errors)
 
-# secu_extractor = SecuExtractor('doc_empty.pdf')
-# extracted = secu_extractor.extract_secu_as_string()
 
-pdfhandler = PdfHandler(["83825502400021","Bob","Sinclar"],"doc_empty.pdf","withSiret.pdf")
+pdfhandler = PdfHandler("Bob","Sinclar","doc_empty.pdf","withSiret.pdf")
+# pdfhandler = PdfHandler("doc_empty.pdf","withSiret.pdf")
 pdfhandler.insert_images_and_siret()
+print('===')
+pdfhandler.fill_pdf()
+
+# res = pdfhandler.get_date_of_today_or_last_day()
+
