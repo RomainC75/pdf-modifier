@@ -4,4 +4,4 @@ from utils.insert_images_and_siret import insert_images_and_siret
 from utils.insert_text_inside_forms import fill_pdf
 
 
-from utils.extract_secu import Secu_extractor
+from utils.extract_secu import SecuExtractor
