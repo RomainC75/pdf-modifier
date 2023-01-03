@@ -13,6 +13,7 @@ ANNOT_RECT_KEY = '/Rect'
 SUBTYPE_KEY = '/Subtype'
 WIDGET_SUBTYPE_KEY = '/Widget'
 
+
 DOCS_FOLDER = config['DOCS_FOLDER']
 TEMP_FOLDER = config['TEMP_FOLDER']
 STAMP_FOLDER = config['STAMP_FOLDER']
@@ -149,8 +150,6 @@ class PdfHandler:
         
         print('done', output_pdf_path)
         return output_pdf_path
-
-
 
 
 # insert_images_and_siret("83825502400021","doc_empty.pdf","withSiret.pdf")

@@ -10,6 +10,7 @@ config = dotenv_values(".env.folders")
 DOCS_FOLDER= config["DOCS_FOLDER"]
 TEMP_FOLDER = config["TEMP_FOLDER"]
 
+
 class SecuExtractor:
     def __init__(self, emptypdf_name) -> None:
         self.emptypdf_name = emptypdf_name

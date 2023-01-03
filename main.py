@@ -6,8 +6,13 @@ from dotenv import dotenv_values
 from tqdm import tqdm
 import shutil
 
-# from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
-from utils import SecuExtractor, PdfHandler, get_infos_from_filename, create_folder, raise_random_error, copy_to_merge_folder
+from utils import \
+    PdfHandler, \
+    get_infos_from_filename, \
+    create_folder, \
+    raise_random_error, \
+    copy_to_merge_folder, \
+    PDFMerger
 
 SIRET_CONVERTOR ={
     '49320424200017':'LACHOPE'
@@ -35,29 +40,22 @@ for stamp_filename in stamps:
 
 error_file_names = []
 
-
 #get every files names to work on
 pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
 for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
     try:
         pathFilename = path.split(pdfPath)
-        print('0 : ',pathFilename[0])
-
         siret, lastname, firstname, date = get_infos_from_filename(pathFilename[1])
-        print(siret, lastname, firstname, date)
 
         society_name = SIRET_CONVERTOR[siret]
         month = date[2:4]
         year = date[4:]
+        
         society_folder = f'{config["OUTPUT_FOLDER"]}{society_name}_AER_{month}_{year}'
         worker_folder = f'{society_folder}/{lastname}_{firstname}'
-        
-        print("1")
-
+    
         create_folder(society_folder)
         create_folder(worker_folder)
-        
-        print("2")
         
         pdfhandler = PdfHandler(\
             siret = SIRET_CONVERTOR[siret], \
@@ -80,45 +78,10 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         shutil.copy(pdfPath, f'{config["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
 
 
+
 print(f'Errors : {len(error_file_names)}')
 if len(error_file_names)>0:
     for name in error_file_names:
         print(f'==>{name}')
     print(f'go to the folder /errors to handle these files separatly')
-
-
-#     print(siret,lastname, firstname)
-#     insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
-#     fill_pdf( "temp.pdf", pathFilename[1] ) 
-    
-
-
-
-# print("errors : ",errors)
-# try:
-#     pdfhandler = PdfHandler("Bob","Sinclar","doc_empty.pdf","withSiret.pdf", sign_last_day_of_month=True )
-#     # pdfhandler = PdfHandler("doc_empty.pdf","withSiret.pdf")
-#     pdfhandler.insert_images_and_siret()
-#     print('===')
-#     pdfhandler.fill_pdf()
-# except :
-#     print('import error')
-
-
-
-
-#get every files names to work on
-# pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
-# for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
-#     pathFilename = path.split(pdfPath)
-    
-#     secu_string=extract_secu_as_string(pathFilename[1])
-#     if len(secu_string)!=13 and len(secu_string)!=15:
-#         print("Secu number : wrong length : ", secu_string, len(secu_string))
-#         errors+=1
-
-#     siret, lastname, firstname = get_infos_from_filename(pathFilename[1])
-#     print(siret,lastname, firstname)
-#     insert_images_and_siret([secu_string, lastname,firstname], pathFilename[1], "temp.pdf")
-#     fill_pdf( "temp.pdf", pathFilename[1] ) 
 
