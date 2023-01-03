@@ -26,6 +26,7 @@ class PdfHandler:
             first_name:str, \
             last_name:str, \
             contract_start_date:str, \
+            sign_day: dict, \
             worker_folder:str, \
             base_pdf:str, \
             sign_last_day_of_month=True ) -> None:
@@ -36,7 +37,7 @@ class PdfHandler:
         self.worker_folder = worker_folder
 
         self.sign_last_day_of_month=sign_last_day_of_month
-        self.sign_day = None
+        self.sign_day = sign_day
         self.secuExtractor = SecuExtractor(self.base_pdf)
         self.extracted_secu = self.secuExtractor.extract_secu_as_string()
 
@@ -98,7 +99,6 @@ class PdfHandler:
 
 
     def get_data_dict(self):
-        self.get_date_of_today_or_last_day()
         data_dict = {
             'EMPLOYEUR_NOM': 'BARILLET',
             'EMPLOYEUR_PRENOM': 'Renaud',

@@ -12,7 +12,7 @@ from utils import \
     PDFMerger, \
     merge_pdfs, \
     SIRET_CONVERTOR, \
-    date_format_checker
+    menu
 
 print('wha')
 
@@ -40,7 +40,7 @@ for stamp_filename in stamps:
 error_file_names = []
 merge_folders_paths = []
 
-
+sign_day = menu()
 
 pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
 for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
@@ -65,6 +65,7 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
             contract_start_date = date, \
             worker_folder = worker_folder, \
             base_pdf = pathFilename[1], \
+            sign_day = sign_day, \
             sign_last_day_of_month=True)
 
         pdfhandler.insert_images_and_siret()

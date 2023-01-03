@@ -62,7 +62,4 @@ def menu():
         'year' : today_date.year
     }
 
-datee = menu()
 
-
-print("=====> date : ", datee)
