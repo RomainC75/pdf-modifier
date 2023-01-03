@@ -12,7 +12,8 @@ from utils import \
     create_folder, \
     raise_random_error, \
     copy_to_merge_folder, \
-    PDFMerger
+    PDFMerger, \
+    merge_pdfs
 
 SIRET_CONVERTOR ={
     '49320424200017':'LACHOPE'
@@ -38,9 +39,11 @@ for stamp_filename in stamps:
     if not path.exists(config["STAMP_FOLDER"]+stamp_filename):
         handle_error(config["STAMP_FOLDER"]+stamp_filename)
 
-error_file_names = []
 
-#get every files names to work on
+error_file_names = []
+merge_folders_paths = []
+
+
 pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
 for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
     try:
@@ -69,19 +72,27 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         pdfhandler.insert_images_and_siret()
 
         completed_file = pdfhandler.fill_pdf()
-        copy_to_merge_folder(completed_file, society_folder)
+
+        new_merge_folder_path = copy_to_merge_folder(completed_file, society_folder)
+        if new_merge_folder_path:
+            merge_folders_paths.append({
+                'folder_path': new_merge_folder_path,
+                'folder_name': f'{society_name}_AER_{month}_{year}',
+                })
 
     except:
+        # if error => copy to the "error" folder
         error_file_names.append(pdfPath)
         create_folder(f'{config["OUTPUT_FOLDER"]}00_errors')
-        #TODO copy the file in the error folder
         shutil.copy(pdfPath, f'{config["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
 
 
-
-print(f'Errors : {len(error_file_names)}')
+print(f'PDF handled => {len(pdfPath)}')
+print(f'Errors => {len(error_file_names)}')
 if len(error_file_names)>0:
     for name in error_file_names:
         print(f'==>{name}')
     print(f'go to the folder /errors to handle these files separatly')
 
+for merge_folder_obj in merge_folders_paths:
+    merge_pdfs(merge_folder_obj)

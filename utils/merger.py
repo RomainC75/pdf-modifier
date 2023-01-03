@@ -8,17 +8,13 @@ from pdfrw import PdfReader, PdfWriter
 
 def PDFMerger (merge_folder):
     merger = PdfMerger()
-
     # pdfPaths = glob('../data/merge/'+'*.pdf')
     pdfPaths = glob(merge_folder+'*.pdf')
-
     for pdf_path in pdfPaths:
         print('path :',pdf_path)
         merger.append(pdf_path)
-
     merger.write("merged-pdf.pdf")
     merger.close()
-    
 # PDFMerger('../data/output/LACHOPE_AER_10_2022/01_merge/')
 
 def PDFrw_Merger(merge_folder):
@@ -27,13 +23,12 @@ def PDFrw_Merger(merge_folder):
     for inpfn in pdfPaths:
         writer.addpages(PdfReader(inpfn).pages)
     writer.write('MERGED.pdf')
-
 # PDFrw_Merger('../data/output/LACHOPE_AER_10_2022/01_merge/')
 
 # ===============================
-
+# ===>>>
 def merge_pdfs(merge_folder):
-    pdfPaths = glob(merge_folder+'*.pdf')
+    pdfPaths = glob(merge_folder['folder_path']+'/*.pdf')
     pdf_writer = PdfFileWriter()
     for path in pdfPaths:
         pdf_reader = PdfFileReader(path)
@@ -42,10 +37,10 @@ def merge_pdfs(merge_folder):
             pdf_writer.addPage(pdf_reader.getPage(page))
 
     # Write out the merged PDF
-    with open('MERGED.pdf', 'wb') as out:
+    with open(f'{merge_folder["folder_path"]}/{merge_folder["folder_name"]}', 'wb') as out:
         pdf_writer.write(out)
 
-merge_pdfs('../data/output/LACHOPE_AER_10_2022/01_merge/')
+# merge_pdfs('../data/output/LACHOPE_AER_10_2022/01_merge/')
 
 # ===============================
 

@@ -20,10 +20,6 @@ STAMP_FOLDER = config['STAMP_FOLDER']
 OUTPUT_FOLDER = config['OUTPUT_FOLDER']
 
 
-# pdf_template = TEMP_FOLDER+"doc_empty.pdf"
-# pdf_output = OUTPUT_FOLDER+"folder/output.pdf"
-
-
 class PdfHandler:
     def __init__( self, \
             siret:str, \
@@ -48,8 +44,6 @@ class PdfHandler:
         self.last_name = last_name
         self.contract_start_date = contract_start_date
         
-        
-
 
     def insert_images_and_siret(self) -> None:
         input_file=DOCS_FOLDER+self.base_pdf
@@ -58,7 +52,6 @@ class PdfHandler:
         self.insert_siret_on_first_page(file_handle)
         self.insert_image(file_handle)
         file_handle.save(output_file,garbage=3, deflate=True)
-        
 
 
     def insert_siret_on_first_page(self, file_handle) -> None:
@@ -88,6 +81,7 @@ class PdfHandler:
         first_page.insert_image(signature_rectangle, stream=signature_img , xref=img_xref)
         first_page.insert_image(stamp_rectangle, stream=stamp_img , xref=img_xref)
 
+
     def get_date_of_today_or_last_day(self):
         today_date = date.today()
         last_day_converter = ['31','28','31','30','31','30','31','31','30','31','30','31']
@@ -96,9 +90,6 @@ class PdfHandler:
             day = last_day_converter[int(today_date.month)-1]
         else:
             day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
-
-        print('day : ',day)
-        
         self.sign_day = {
             'day' : day,
             'month' : str(today_date.month) if today_date.month>=10 else '0'+str(today_date.month),

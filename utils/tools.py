@@ -15,12 +15,15 @@ def get_infos_from_filename(filename):
 def create_folder(path):
     try:
         mkdir(path)
+        return True
     except:
-        pass
+        return False
 
 def copy_to_merge_folder(file_to_copy, society_folder):
-    create_folder(society_folder+'/01_merge')
-    shutil.copy(file_to_copy,society_folder+'/01_merge')
+    merge_folder_path = society_folder+'/01_merge'
+    is_new_merge_folder_created = create_folder(merge_folder_path)
+    shutil.copy(file_to_copy,merge_folder_path)
+    return merge_folder_path if is_new_merge_folder_created else None
 
 def raise_random_error():
     if random.randint(0,1)==1:
