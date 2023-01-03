@@ -1,8 +1,12 @@
 from datetime import date, datetime
 import re
 
-def date_format_checker(date:str):
-    pass
+def date_checker(date_values:list):
+    try:
+        datetime(int(date_values[0]), int(date_values[1]), int(date_values[2]))
+        return  True
+    except:
+        return False
 
 # def get_date_of_today_or_last_day(sign_last_day_of_month):
 
@@ -34,16 +38,13 @@ def menu():
     else:
         if re.search("^\d{4}-\d{2}-\d{2}$",date_selection_input):
             date_values = date_selection_input.split('-')
-            try:
-                datetime(int(date_values[0]), int(date_values[1]), int(date_values[2]))
-                print('values : ',date_values)
+            if date_checker(date_values):
                 return {
                     'day' : date_values[2],
                     'month' : date_values[1],
                     'year' : date_values[0]
                 }
-
-            except :
+            else:
                 print("====================")
                 print("- not a valid date -")
                 print("====================")
