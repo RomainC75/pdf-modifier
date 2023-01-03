@@ -1,0 +1,68 @@
+from datetime import date, datetime
+import re
+
+def date_format_checker(date:str):
+    pass
+
+def get_date_of_today_or_last_day(sign_last_day_of_month):
+
+    today_date = date.today()
+    print(today_date)
+    last_day_converter = ['31','28','31','30','31','30','31','31','30','31','30','31']
+    day = None
+    if(sign_last_day_of_month):
+        day = last_day_converter[int(today_date.month)-1]
+    else:
+        day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
+    
+
+
+def menu():
+    print('which date do you want to insert at the end of the documents :')
+    print('today => t')
+    print('manual => yyyy-mm-dd')
+    print('last day of month => default')
+    date_selection_input = input('type : ')
+    today_date = date.today()
+    day=None
+    if date_selection_input == 't':
+        day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
+
+    elif date_selection_input == '':
+        last_day_converter = ['31','28','31','30','31','30','31','31','30','31','30','31']
+        day = last_day_converter[int(today_date.month)-1]
+
+    else:
+        if re.search("^\d{4}-\d{2}-\d{2}$",date_selection_input):
+            date_values = date_selection_input.split('-')
+            try:
+                datetime(int(date_values[0]), int(date_values[1]), int(date_values[2]))
+                print('values : ',date_values)
+                return {
+                    'day' : date_values[2],
+                    'month' : date_values[1],
+                    'year' : date_values[0]
+                }
+
+            except :
+                print("====================")
+                print("- not a valid date -")
+                print("====================")
+                menu()
+        else:
+            print("==================")
+            print("- format error ! -")
+            print("-  yyyy-mm-dd !  -")
+            print("==================")
+            menu()
+
+    return {
+        'day' : day,
+        'month' : str(today_date.month) if today_date.month>=10 else '0'+str(today_date.month),
+        'year' : today_date.year
+    }
+
+print(menu())
+
+
+# print(get_date_of_today_or_last_day(True))

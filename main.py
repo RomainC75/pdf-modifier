@@ -1,11 +1,8 @@
 from os import path, mkdir
-import re
-from time import sleep
 from glob import glob
 from dotenv import dotenv_values
 from tqdm import tqdm
 import shutil
-
 from utils import \
     PdfHandler, \
     get_infos_from_filename, \
@@ -13,11 +10,11 @@ from utils import \
     raise_random_error, \
     copy_to_merge_folder, \
     PDFMerger, \
-    merge_pdfs
+    merge_pdfs, \
+    SIRET_CONVERTOR, \
+    date_format_checker
 
-SIRET_CONVERTOR ={
-    '49320424200017':'LACHOPE'
-}
+print('wha')
 
 #test working folders 
 config = dotenv_values(".env.folders")
@@ -87,7 +84,8 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         shutil.copy(pdfPath, f'{config["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
 
 
-print(f'PDF handled => {len(pdfPath)}')
+print('\n======Results======\n')
+print(f'PDF handled => {len(pdfPaths)}')
 print(f'Errors => {len(error_file_names)}')
 if len(error_file_names)>0:
     for name in error_file_names:
