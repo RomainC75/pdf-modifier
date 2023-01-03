@@ -83,21 +83,6 @@ class PdfHandler:
         first_page.insert_image(stamp_rectangle, stream=stamp_img , xref=img_xref)
 
 
-    def get_date_of_today_or_last_day(self):
-        today_date = date.today()
-        last_day_converter = ['31','28','31','30','31','30','31','31','30','31','30','31']
-        day = None
-        if(self.sign_last_day_of_month):
-            day = last_day_converter[int(today_date.month)-1]
-        else:
-            day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
-        self.sign_day = {
-            'day' : day,
-            'month' : str(today_date.month) if today_date.month>=10 else '0'+str(today_date.month),
-            'year' : today_date.year
-        }
-
-
     def get_data_dict(self):
         data_dict = {
             'EMPLOYEUR_NOM': 'BARILLET',
@@ -115,11 +100,9 @@ class PdfHandler:
         return data_dict
 
     def fill_pdf(self):
-
-        print('?? fill_pdf ??')
         input_pdf_path = TEMP_FOLDER+self.output_temp_name
         output_pdf_path = self.worker_folder+'/'+self.output_file_name
-        print('output : ', output_pdf_path)
+        # print('output : ', output_pdf_path)
         template_pdf = pdfrw.PdfReader(input_pdf_path)
         data_dict = self.get_data_dict()
         for page in template_pdf.pages:
@@ -139,7 +122,7 @@ class PdfHandler:
         template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
         pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
         
-        print('done', output_pdf_path)
+        # print('done', output_pdf_path)
         return output_pdf_path
 
 

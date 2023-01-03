@@ -7,14 +7,11 @@ from utils import \
     PdfHandler, \
     get_infos_from_filename, \
     create_folder, \
-    raise_random_error, \
     copy_to_merge_folder, \
-    PDFMerger, \
     merge_pdfs, \
     SIRET_CONVERTOR, \
     menu
 
-print('wha')
 
 #test working folders 
 config = dotenv_values(".env.folders")
@@ -88,6 +85,7 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
 
 print('\n======Results======\n')
 print(f'PDF handled => {len(pdfPaths)}')
+print(f'No Error => {len(pdfPaths)-len(error_file_names)}')
 print(f'Errors => {len(error_file_names)}')
 if len(error_file_names)>0:
     for name in error_file_names:
