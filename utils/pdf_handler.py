@@ -5,7 +5,6 @@ import fitz
 from dotenv import dotenv_values
 config = dotenv_values(".env.folders") 
 from utils import SecuExtractor
-import random
 
 ANNOT_KEY = '/Annots'
 ANNOT_FIELD_KEY = '/T'
@@ -19,9 +18,9 @@ TEMP_FOLDER = config['TEMP_FOLDER']
 STAMP_FOLDER = config['STAMP_FOLDER']
 OUTPUT_FOLDER = config['OUTPUT_FOLDER']
 
+
 # pdf_template = TEMP_FOLDER+"doc_empty.pdf"
 # pdf_output = OUTPUT_FOLDER+"folder/output.pdf"
-
 
 
 class PdfHandler:
@@ -47,6 +46,7 @@ class PdfHandler:
         self.first_name = first_name
         self.last_name = last_name
         self.contract_start_date = contract_start_date
+        
         
 
 
@@ -122,8 +122,8 @@ class PdfHandler:
         }
         return data_dict
 
-
     def fill_pdf(self):
+
         print('?? fill_pdf ??')
         input_pdf_path = TEMP_FOLDER+self.output_temp_name
         output_pdf_path = self.worker_folder+'/'+self.output_file_name
@@ -146,11 +146,11 @@ class PdfHandler:
                                 annotation.update(pdfrw.PdfDict(AP=''))
         template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
         pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
-        print('done')
+        
+        print('done', output_pdf_path)
+        return output_pdf_path
 
 
-    def raise_random_error():
-        if random.randint(0,1)==1:
-            raise SyntaxError('error')
+
 
 # insert_images_and_siret("83825502400021","doc_empty.pdf","withSiret.pdf")

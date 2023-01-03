@@ -1,4 +1,4 @@
-from utils.tools import get_infos_from_filename, create_folder
+from utils.tools import get_infos_from_filename, create_folder, raise_random_error, copy_to_merge_folder
 from utils.old.extract_secu import extract_secu_as_string
 
 from utils.insert_text_inside_forms import fill_pdf

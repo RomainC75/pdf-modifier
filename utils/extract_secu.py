@@ -16,6 +16,7 @@ class SecuExtractor:
         self.pdf_path = DOCS_FOLDER+self.emptypdf_name
     
     def convert_first_page_to_image(self):
+        print('convert first page : ', self.pdf_path)
         first_page = convert_from_path(self.pdf_path, dpi=600, first_page=2, last_page=2)    
         first_page[0].save(TEMP_FOLDER+'temp.jpg', 'JPEG')
 

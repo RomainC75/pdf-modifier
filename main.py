@@ -4,9 +4,10 @@ from time import sleep
 from glob import glob
 from dotenv import dotenv_values
 from tqdm import tqdm
+import shutil
 
 # from utils import get_infos_from_filename, extract_secu_as_string, fill_pdf, insert_images_and_siret
-from utils import SecuExtractor, PdfHandler, get_infos_from_filename, create_folder
+from utils import SecuExtractor, PdfHandler, get_infos_from_filename, create_folder, raise_random_error, copy_to_merge_folder
 
 SIRET_CONVERTOR ={
     '49320424200017':'LACHOPE'
@@ -34,6 +35,7 @@ for stamp_filename in stamps:
 
 error_file_names = []
 
+
 #get every files names to work on
 pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
 for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
@@ -47,20 +49,36 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         society_name = SIRET_CONVERTOR[siret]
         month = date[2:4]
         year = date[4:]
-        society_folder = f'{config["OUTPUT_FOLDER"]}/{society_name}_AER_{month}_{year}'
+        society_folder = f'{config["OUTPUT_FOLDER"]}{society_name}_AER_{month}_{year}'
         worker_folder = f'{society_folder}/{lastname}_{firstname}'
         
-        
+        print("1")
+
         create_folder(society_folder)
         create_folder(worker_folder)
         
+        print("2")
         
-        pdfhandler = PdfHandler(SIRET_CONVERTOR[siret], firstname, lastname, date, worker_folder, "doc_empty.pdf", sign_last_day_of_month=True)
+        pdfhandler = PdfHandler(\
+            siret = SIRET_CONVERTOR[siret], \
+            first_name = firstname, \
+            last_name = lastname, \
+            contract_start_date = date, \
+            worker_folder = worker_folder, \
+            base_pdf = pathFilename[1], \
+            sign_last_day_of_month=True)
+
         pdfhandler.insert_images_and_siret()
-        pdfhandler.fill_pdf()
-        print('=====§§§§§§ ',society_folder, worker_folder)
+
+        completed_file = pdfhandler.fill_pdf()
+        copy_to_merge_folder(completed_file, society_folder)
+
     except:
         error_file_names.append(pdfPath)
+        create_folder(f'{config["OUTPUT_FOLDER"]}00_errors')
+        #TODO copy the file in the error folder
+        shutil.copy(pdfPath, f'{config["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
+
 
 print(f'Errors : {len(error_file_names)}')
 if len(error_file_names)>0:
