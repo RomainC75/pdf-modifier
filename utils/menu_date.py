@@ -4,18 +4,16 @@ import re
 def date_format_checker(date:str):
     pass
 
-def get_date_of_today_or_last_day(sign_last_day_of_month):
+# def get_date_of_today_or_last_day(sign_last_day_of_month):
 
-    today_date = date.today()
-    print(today_date)
-    last_day_converter = ['31','28','31','30','31','30','31','31','30','31','30','31']
-    day = None
-    if(sign_last_day_of_month):
-        day = last_day_converter[int(today_date.month)-1]
-    else:
-        day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
-    
-
+#     today_date = date.today()
+#     print(today_date)
+#     last_day_converter = ['31','28','31','30','31','30','31','31','30','31','30','31']
+#     day = None
+#     if(sign_last_day_of_month):
+#         day = last_day_converter[int(today_date.month)-1]
+#     else:
+#         day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
 
 def menu():
     print('which date do you want to insert at the end of the documents :')
@@ -26,6 +24,7 @@ def menu():
     today_date = date.today()
     day=None
     if date_selection_input == 't':
+        print("++++")
         day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
 
     elif date_selection_input == '':
@@ -48,13 +47,13 @@ def menu():
                 print("====================")
                 print("- not a valid date -")
                 print("====================")
-                menu()
+                return menu()
         else:
             print("==================")
             print("- format error ! -")
             print("-  yyyy-mm-dd !  -")
             print("==================")
-            menu()
+            return menu()
 
     return {
         'day' : day,
@@ -62,7 +61,7 @@ def menu():
         'year' : today_date.year
     }
 
-print(menu())
+datee = menu()
 
 
-# print(get_date_of_today_or_last_day(True))
+print("=====> date : ", datee)

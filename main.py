@@ -41,6 +41,7 @@ error_file_names = []
 merge_folders_paths = []
 
 
+
 pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
 for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
     try:
