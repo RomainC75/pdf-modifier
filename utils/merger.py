@@ -37,7 +37,7 @@ def merge_pdfs(merge_folder):
             pdf_writer.addPage(pdf_reader.getPage(page))
 
     # Write out the merged PDF
-    with open(f'{merge_folder["folder_path"]}/{merge_folder["folder_name"]}', 'wb') as out:
+    with open(f'{merge_folder["folder_path"]}/{merge_folder["folder_name"]}.pdf', 'wb') as out:
         pdf_writer.write(out)
 
 # merge_pdfs('../data/output/LACHOPE_AER_10_2022/01_merge/')
