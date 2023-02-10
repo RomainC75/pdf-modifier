@@ -1,18 +1,17 @@
 # FROM python:3.10
-FROM 3.10-alpine3.17
+FROM python:3.8-bullseye
 
 WORKDIR /app
-# EXPOSE 5000
 
-# ENV FLASK_DEBUG 1
-# ENV PYTHONUNBUFFERED 0
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 COPY . .
-
-# CMD ["flask", "run", "--host", "0.0.0.0"]
-CMD ["python3", "main.py"]
-
-# docker run -p 5000:5000 -v ${PWD}:/app flask-rest-api
+RUN pwd
+CMD ["python3", "/app/main.py"]

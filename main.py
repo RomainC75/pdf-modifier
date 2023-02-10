@@ -10,7 +10,7 @@ from utils import \
     copy_to_merge_folder, \
     merge_pdfs, \
     SIRET_CONVERTOR, \
-    menu
+    get_selected_date
 
 
 #test working folders 
@@ -37,7 +37,7 @@ for stamp_filename in stamps:
 error_file_names = []
 merge_folders_paths = []
 
-sign_day = menu()
+sign_day = get_selected_date()
 
 pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
 for pdfPath in tqdm(pdfPaths,desc="pdf documents"):

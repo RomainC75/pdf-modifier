@@ -1,5 +1,6 @@
 from datetime import date, datetime
 import re
+import os
 
 def date_checker(date_values:list):
     try:
@@ -19,14 +20,25 @@ def date_checker(date_values:list):
 #     else:
 #         day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)
 
-def menu():
-    print('which date do you want to insert at the end of the documents :')
-    print('today => t')
-    print('manual => yyyy-mm-dd')
-    print('last day of month => default')
-    date_selection_input = input('type : ')
-    today_date = date.today()
-    day=None
+def get_selected_date():
+    try:
+        with open(os.path.dirname(__file__) +'/../date_choice.txt', 'r') as date_file:
+            content=date_file.read()
+            print('==> date_choice.txt file content : ', content)
+            return menu(content)
+    except :
+        return menu(None)
+
+def menu(date_selection_input):
+    if(not date_selection_input):
+        print('which date do you want to insert at the end of the documents :')
+        print('today => t')
+        print('manual => yyyy-mm-dd')
+        print('last day of month => default')
+        date_selection_input = input('type : ')
+        today_date = date.today()
+        day=None
+
     if date_selection_input == 't':
         print("++++")
         day = str(today_date.day) if today_date.day>=10 else '0'+str(today_date.day)

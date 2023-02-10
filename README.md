@@ -36,3 +36,19 @@ Report must contain :
  list of unextracted file names
  => creation of a folder with no extracted pdfs (copy)
  
+
+## date_choice.txt 
+
+```
+today => t
+manual => yyyy-mm-dd
+last day of month => default
+```
+
+
+```
+cd ..../project
+docker build -t la-bellevilloise .
+
+docker run -v "${PWD}/data":/app/data --name labellevilloise la-bellevilloise
+```
