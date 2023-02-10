@@ -76,8 +76,9 @@ for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
                 'folder_name': f'{society_name}_AER_{month}_{year}',
                 })
 
-    except:
+    except Exception as inst:
         # if error => copy to the "error" folder
+        print('==>ERROR : ',inst)
         error_file_names.append(pdfPath)
         create_folder(f'{config["OUTPUT_FOLDER"]}00_errors')
         shutil.copy(pdfPath, f'{config["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')

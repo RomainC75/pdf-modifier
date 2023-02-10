@@ -18,7 +18,7 @@ class SecuExtractor:
     
     def convert_first_page_to_image(self):
         print('convert first page : ', self.pdf_path)
-        first_page = convert_from_path(self.pdf_path, dpi=600, first_page=2, last_page=2)    
+        first_page = convert_from_path(self.pdf_path, dpi=600, first_page=2, last_page=2)
         first_page[0].save(TEMP_FOLDER+'temp.jpg', 'JPEG')
 
     def select_rectangle_and_change_colors(self, img):
@@ -32,16 +32,23 @@ class SecuExtractor:
 
     def extract_secu_as_string(self):
         try:
+            print('0.5')
             self.convert_first_page_to_image()
+            print('1')
             img = cv2.imread(TEMP_FOLDER+'temp.jpg')
+            print('2')
             secu_morphed = self.select_rectangle_and_change_colors(img)
-
+            print('3')
             txt = pytesseract.image_to_string(secu_morphed).encode("utf-8")
-
+            print('4')
             txt_decode = txt.decode('utf-8')
+            print('5')
             secu = re.findall(r"[0-9]*",txt_decode)
+            print('6')
             secu_string = "".join(secu)
+            print('7')
             print("n° SECU  : ", secu_string)
+            
             return secu_string
         except :
             raise ImportError('could not extract SECU number')
