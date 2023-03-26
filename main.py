@@ -12,7 +12,6 @@ from utils import \
     SIRET_CONVERTOR, \
     get_selected_date
 
-
 #test working folders 
 config = dotenv_values(".env.folders")
 def handle_error(path):

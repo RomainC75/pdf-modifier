@@ -37,7 +37,7 @@ Report must contain :
  => creation of a folder with no extracted pdfs (copy)
  
 
-## date_choice.txt 
+## in file => date_choice.txt 
 
 ```
 today => t
@@ -47,8 +47,8 @@ last day of month => default
 
 
 ```
-cd ..../project
+cd .../project
 docker build -t la-bellevilloise .
 
-docker run -v "${PWD}/data":/app/data --name labellevilloise la-bellevilloise
+docker run -v "${PWD}/data":/app/data --name la-bellevilloise la-bellevilloise
 ```

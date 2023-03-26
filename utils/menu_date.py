@@ -22,7 +22,7 @@ def date_checker(date_values:list):
 
 def get_selected_date():
     try:
-        with open(os.path.dirname(__file__) +'/../date_choice.txt', 'r') as date_file:
+        with open(os.path.dirname(__file__) +'/../data/date_choice.txt', 'r') as date_file:
             content=date_file.read()
             print('==> date_choice.txt file content : ', content)
             return menu(content)
