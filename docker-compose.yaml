@@ -24,3 +24,5 @@ services:
     volumes:
       - $PWD/server/build:/server/build
     command: npm run dev
+    env_file:
+      - .env

@@ -2,4 +2,7 @@ pdf_handler/data/
 pdf_handler/.venv/
 pdf_handler/utils/SIRET_CONVERTOR.py
 
+server/build/uploads/*
+
 **/*/node_modules
+.env
