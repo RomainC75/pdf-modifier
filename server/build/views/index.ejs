@@ -10,19 +10,20 @@
       crossorigin="anonymous"
     />
     <script
-      src="https://cdn.socket.io/4.5.3/socket.io.min.js"
-      integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi"
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"
       crossorigin="anonymous"
     ></script>
   </head>
   <script type="text/javascript">
     window.onload = function () {
-      const socket = io();
+      
       let socketid = undefined;
       
+      const sockett = io("http://localhost:5000", { path: "/socket.io" });
+      const socket = io("http://localhost:5000");
       
 
-      socket.connect("https://localhost:5000");
+      
       let progressBar = document.getElementById("progressBar");
       
       socket.on("connect", function () {

@@ -1,37 +1,70 @@
-const express = require('express');
-const Bull = require('bull');
-const path = require('path')
-const morgan =require("morgan")
-const multerConfig = require('./config/multer.config')
-
-const PORT = process.env.PORT || 5000
-const REDIS_URL = process.env.REDIS || "redis://redis:6379"
-
-
-const pdfQueue = new Bull('pdfQueue',REDIS_URL);
-
+const express = require("express");
+const Bull = require("bull");
+const path = require("path");
+const morgan = require("morgan");
+const multerConfig = require("./config/multer.config");
 const app = express();
+const httpServer = require("http").createServer(app);
+const { Server } = require("socket.io");
+const socketMiddleware = require("./middlewares/socket.mid");
 
-app.set('view engine', 'ejs')
-app.set('views', path.join(__dirname, 'views'))
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
-app.use(morgan('combined'))
-
-app.get('/',(req,res,next)=>{
-    res.render("index")
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5000",
+    methods: ["GET", "POST"],
+  },
+  path:"/socket.io"
 })
 
-app.post('/process-pdf/:socketid', multerConfig.array('files'), async (req, res) => {
-  console.log('"=======================================')
-  const { pdfData } = req.body;
-  console.log('=>', pdfData)
-  // add the job to the queue
-  await pdfQueue.add({ pdfData });
+const PORT = process.env.PORT || 5000;
+const REDIS_URL = process.env.REDIS || "redis://redis:6379";
 
-  res.status(202).json({ message: 'PDF processing job added to queue' });
+const pdfQueue = new Bull("pdfQueue", REDIS_URL);
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.set('socketio',io)
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(morgan("combined"));
+app.use(socketMiddleware(io))
+
+app.get("/", (req, res, next) => {
+  res.render("index");
 });
+
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+app.post(
+  "/process-pdf/:socketId",
+  multerConfig.array("files"),
+  async (req, res) => {
+    console.log('"=======================================>', req.params.socketId);
+    
+    console.log('=> ', req.files)
+    // add the job to the queue
+    // await pdfQueue.add({ pdfData });
+
+    
+
+    req.files.forEach(async (file, index) => {
+      const percent = (index+1)/req.files.length*100
+      console.log("Percent : ", percent)
+      req.mySocket.emit("update progress",percent)
+      await new Promise(resolve=>setTimeout(resolve,2000))
+    });
+    
+
+    res.status(202).json({ message: "PDF processing job added to queue" });
+  }
+);
 
 // start the Bull queue worker to process PDF jobs
 pdfQueue.process(async (job) => {
@@ -43,7 +76,6 @@ pdfQueue.process(async (job) => {
 });
 
 // start the Express app
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
