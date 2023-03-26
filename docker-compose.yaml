@@ -1,0 +1,26 @@
+version: '3'
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  # pdf_handler:
+  #   build: ./pdf_handler
+  #   links:
+  #     - redis
+  #   environment:
+  #     - REDIS_URL=redis://redis:6379
+      
+  server:
+    build: ./server
+    links:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PORT=5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - $PWD/server/build:/server/build
+    command: npm run dev
