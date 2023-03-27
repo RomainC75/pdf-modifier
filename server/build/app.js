@@ -72,32 +72,42 @@ app.post(
       console.log("=> ", req.files);
       // add the job to the queue
       // await pdfQueue.add({ pdfData });
-      let index = 0;
-      const id = setInterval(async () => {
-        try {
-          const percent = ((index + 1) / req.files.length) * 100;
-          console.log("Percent : ", percent);
-          req.mySocket.emit("update progress", percent);
 
-          if (index === req.files.length - 1) {
-            clearInterval(id);
-          }
-          // redisClient.publish('pdf-to-handle', 'hello world');
-          const data = JSON.stringify(req.files[index]["originalname"])
-          // const data = "bonjour";
-          await redisClient.rPush("pdf-to-handle", data);
+      const originalNames = req.files.map(file=>file.originalname)
+      console.log("ORIGINAL NAMES : ", originalNames)
+      await redisClient.rPush("pdf-to-handle", JSON.stringify(originalNames));
 
-          index++;
-        } catch (error) {
-          console.log("===> ERROR : ", error)
-        }
-      }, 2000);
+      // let index = 0;
+      // const id = setInterval(async () => {
+      //   try {
+      //     const percent = ((index + 1) / req.files.length) * 100;
+      //     console.log("Percent : ", percent);
+      //     req.mySocket.emit("update progress", percent);
+
+      //     if (index === req.files.length - 1) {
+      //       clearInterval(id);
+      //     }
+      //     // redisClient.publish('pdf-to-handle', 'hello world');
+      //     const originalNames = req.files.map(file=>file.originalname)
+          
+      //     const data = JSON.stringify(req.files[index]["originalname"])
+      //     // const data = "bonjour";
+      //     await redisClient.rPush("pdf-to-handle", data);
+
+      //     index++;
+      //   } catch (error) {
+      //     console.log("===> ERROR : ", error)
+      //   }
+      // }, 2000);
       res.status(202).json({ message: "PDF processing job added to queue" });
     } catch (error) {
       console.log("ERROR : ", error);
     }
   }
 );
+
+
+
 
 // start the Bull queue worker to process PDF jobs
 // pdfQueue.process(async (job) => {

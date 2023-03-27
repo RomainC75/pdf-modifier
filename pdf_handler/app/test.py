@@ -2,6 +2,7 @@ import redis
 import os
 import requests
 import shutil
+import json
 
 REDIS_URL = os.environ.get('REDIS_URL')
 CHANNEL = "pdf-to-handle"
@@ -21,18 +22,25 @@ def redis_queue_pop(db):
     return message_json
 
 
-def process_message(name):
-    print(f"name = > {name}", flush=True)
-    utf_name=name.decode("utf-8").replace('"',"")
-    print(f"utfName = > {utf_name}", flush=True)
-    url="http://server:5000/uploads/"+utf_name
+def process_message(names):
+    print(f"nameS = > {names}", flush=True)
+    utf_names=json.loads(names.decode("utf-8"))
+    
+    print(f"utf_names : {utf_names}")
+    
+    for name in utf_names:
+        print(f"name = > {name}", flush=True)
+        getFile(name)
+
+def getFile(name):
+    url="http://server:5000/uploads/"+name
     print(f"url : {url}")
     res = requests.get(url, headers={'Authorization': f"Bearer {TOKEN}"}, stream=True)
     print(f"res : {res}")
     if res.status_code == 200:
-        with open(utf_name,'wb') as f:
+        with open(f"app/data/docs/{name}",'wb') as f:
             shutil.copyfileobj(res.raw, f)
-            print('Image sucessfully Downloaded: ',utf_name)
+            print('Image sucessfully Downloaded: ',name)
     else:
         print('Image Couldn\'t be retrieved')
 
