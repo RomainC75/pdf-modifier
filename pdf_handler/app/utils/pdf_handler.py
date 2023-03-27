@@ -1,4 +1,5 @@
 # install PyMuPDF
+import os 
 import pdfrw
 from datetime import date
 import fitz
@@ -14,10 +15,10 @@ SUBTYPE_KEY = '/Subtype'
 WIDGET_SUBTYPE_KEY = '/Widget'
 
 
-DOCS_FOLDER = config['DOCS_FOLDER']
-TEMP_FOLDER = config['TEMP_FOLDER']
-STAMP_FOLDER = config['STAMP_FOLDER']
-OUTPUT_FOLDER = config['OUTPUT_FOLDER']
+DOCS_FOLDER = os.environ['DOCS_FOLDER']
+TEMP_FOLDER = os.environ['TEMP_FOLDER']
+STAMP_FOLDER = os.environ['STAMP_FOLDER']
+OUTPUT_FOLDER = os.environ['OUTPUT_FOLDER']
 
 
 class PdfHandler:

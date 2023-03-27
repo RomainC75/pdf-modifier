@@ -15,8 +15,7 @@ from utils import \
 
 #test working folders 
 
-def handler_core():
-    config = dotenv_values("../.env.folders")
+def handle_core(db_publish, selectedDate):
     
     def handle_error(path):
         print("==> Error :")
@@ -24,25 +23,25 @@ def handler_core():
         raise FileNotFoundError
 
     #test folders and files
-    if not path.exists("./data"):
-        handle_error("./data")
+    if not path.exists("./app/data"):
+        handle_error("./app/data")
 
-    for (key,subfolder) in config.items():
-        if not path.exists(subfolder):
-            handle_error(subfolder)
 
     stamps = ["signature.png", "stamp.png"]
     for stamp_filename in stamps:
-        if not path.exists(config["STAMP_FOLDER"]+stamp_filename):
-            handle_error(config["STAMP_FOLDER"]+stamp_filename)
+        if not path.exists(os.environ["STAMP_FOLDER"]+stamp_filename):
+            handle_error(os.environ["STAMP_FOLDER"]+stamp_filename)
 
 
     error_file_names = []
     merge_folders_paths = []
 
-    sign_day = get_selected_date()
+    # ============================
+    sign_day = get_selected_date(selectedDate)
+    
 
-    pdfPaths = glob(config['DOCS_FOLDER']+'*.pdf')
+    pdfPaths = glob(os.environ['DOCS_FOLDER']+'*.pdf')
+    print(f"==> pdfPaths : {pdfPaths}", flush=True)
     for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
         try:
             pathFilename = path.split(pdfPath)
@@ -52,7 +51,7 @@ def handler_core():
             month = date[2:4]
             year = date[4:]
             
-            society_folder = f'{config["OUTPUT_FOLDER"]}{society_name}_AER_{month}_{year}'
+            society_folder = f'{os.environ["OUTPUT_FOLDER"]}{society_name}_AER_{month}_{year}'
             worker_folder = f'{society_folder}/{lastname}_{firstname}'
         
             create_folder(society_folder)
@@ -83,8 +82,8 @@ def handler_core():
             # if error => copy to the "error" folder
             print('==>ERROR : ',inst)
             error_file_names.append(pdfPath)
-            create_folder(f'{config["OUTPUT_FOLDER"]}00_errors')
-            shutil.copy(pdfPath, f'{config["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
+            create_folder(f'{os.environ["OUTPUT_FOLDER"]}00_errors')
+            shutil.copy(pdfPath, f'{os.environ["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
 
 
     print('\n======Results======\n')

@@ -1,3 +1,4 @@
+import os
 import pytesseract
 import cv2
 import numpy as np
@@ -5,10 +6,10 @@ import re
 from pdf2image import convert_from_path
 from dotenv import dotenv_values
 
-config = dotenv_values(".env.folders")
+# config = dotenv_values(".env.folders")
 
-DOCS_FOLDER= config["DOCS_FOLDER"]
-TEMP_FOLDER = config["TEMP_FOLDER"]
+DOCS_FOLDER= os.environ["DOCS_FOLDER"]
+TEMP_FOLDER = os.environ["TEMP_FOLDER"]
 
 
 class SecuExtractor:

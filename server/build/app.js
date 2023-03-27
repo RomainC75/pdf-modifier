@@ -42,7 +42,6 @@ redisClient_subscribe.on('connect', function(){
 });
 
 
-
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -78,7 +77,7 @@ app.post(
 
       console.log("=> ", req.files);
       console.log("req.body : ", req.params.date)
-      const date = req.params
+      const date = req.params.date
       // add the job to the queue
       // await pdfQueue.add({ pdfData });
 

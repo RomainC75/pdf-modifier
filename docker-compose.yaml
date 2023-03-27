@@ -27,10 +27,10 @@ services:
     #   - server
     environment:
       - REDIS_URL=redis://redis:6379
-      - DOCS_FOLDER=./data/docs/
-      - TEMP_FOLDER = ./data/temp/
-      - OUTPUT_FOLDER = ./data/output/
-      - STAMP_FOLDER = ./data/stamps/
+      - DOCS_FOLDER=./app/data/docs/
+      - TEMP_FOLDER=./app/data/temp/
+      - OUTPUT_FOLDER=./app/data/output/
+      - STAMP_FOLDER=./app/data/stamps/
     command: python3 /worker/app/test.py
     volumes:
       - $PWD/pdf_handler/app:/worker/app

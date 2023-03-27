@@ -3,7 +3,7 @@ import os
 import requests
 import shutil
 import json
-# from pdf_handler import handle_core
+from handle_core import handle_core
 from time import sleep
 
 REDIS_URL = os.environ.get('REDIS_URL')
@@ -18,8 +18,7 @@ def redis_db():
 
 def redis_queue_pop(db):
     _, message_json = db.brpop(CHANNEL)
-    return message_json
-
+    return json.loads(message_json.decode("utf-8"))
 
 def getFile(name):
     url="http://server:5000/uploads/"+name
@@ -34,12 +33,8 @@ def save_file(name, raw):
             shutil.copyfileobj(raw, f)
             print('Image sucessfully Downloaded: ',name)
 
-def process_message(names):
-    full_data=json.loads(names.decode("utf-8"))
-    utf_names=full_data["originalNames"]
-    date = full_data["date"]
-    print(f"date : {date}")
-    
+def process_message(obj_message):
+    utf_names=obj_message["originalNames"]
     for name in utf_names:
         print(f"name = > {name}", flush=True)
         getFile(name)
@@ -51,7 +46,7 @@ def main():
     while True:
         message_json = redis_queue_pop(db) 
         process_message(message_json)
-        # handle_core(db_publish)
+        handle_core(db_publish, message_json["date"])
         for i in range(4):
             db_publish.publish('handling_process',json.dumps([i,4]))
             sleep(1)

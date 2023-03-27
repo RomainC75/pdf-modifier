@@ -4,8 +4,8 @@ from datetime import date
 from dotenv import dotenv_values
 config = dotenv_values("../.env.folders")
 
-TEMP_FOLDER = config['TEMP_FOLDER']
-OUTPUT_FOLDER = config['OUTPUT_FOLDER']
+TEMP_FOLDER = os.environ['TEMP_FOLDER']
+OUTPUT_FOLDER = os.environ['OUTPUT_FOLDER']
 
 pdf_template = TEMP_FOLDER+"doc_empty.pdf"
 pdf_output = OUTPUT_FOLDER+"folder/output.pdf"
