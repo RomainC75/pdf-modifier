@@ -25,12 +25,19 @@ const io = new Server(httpServer, {
 console.log("=> REDIS URL", REDIS_URL)
 // const pdfQueue = new Bull("pdfQueue", REDIS_URL);
 const redisClient = redis.createClient({ url: REDIS_URL });
+const redisClient_subscribe = redis.createClient({ url: REDIS_URL });
+
 redisClient.on('error', err => console.log('Redis Client Error', err));
+redisClient_subscribe.on('error', err => console.log('Redis Client Error', err));
 
 redisClient.connect();
+redisClient_subscribe.connect();
 
 // , return_buffers: true
 redisClient.on('connect', function(){
+  console.log('Connected to redis instance');
+});
+redisClient_subscribe.on('connect', function(){
   console.log('Connected to redis instance');
 });
 
@@ -71,7 +78,7 @@ app.post(
 
       console.log("=> ", req.files);
       console.log("req.body : ", req.params.date)
-      const date = req.params.date
+      const date = req.params
       // add the job to the queue
       // await pdfQueue.add({ pdfData });
 
@@ -84,7 +91,7 @@ app.post(
       //   try {
       //     const percent = ((index + 1) / req.files.length) * 100;
       //     console.log("Percent : ", percent);
-      //     req.mySocket.emit("update progress", percent);
+      //     req.myIo.emit("update progress", percent);
 
       //     if (index === req.files.length - 1) {
       //       clearInterval(id);
@@ -109,16 +116,13 @@ app.post(
 );
 
 
+redisClient_subscribe.subscribe('handling_process', (message)=>{
+  const values = JSON.parse(message)
+  const percent = ((parseInt(values[0]) + 1) / parseInt(values[1])) * 100;
+  io.emit("update progress", percent);
+});
 
 
-// start the Bull queue worker to process PDF jobs
-// pdfQueue.process(async (job) => {
-//   const { pdfData } = job.data;
-
-//   // TODO: process the PDF data
-
-//   console.log(`Processed PDF with data: ${pdfData}`);
-// });
 
 errorHandler(app);
 

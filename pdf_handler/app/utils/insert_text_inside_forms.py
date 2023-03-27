@@ -1,7 +1,8 @@
+import os 
 import pdfrw
 from datetime import date
 from dotenv import dotenv_values
-config = dotenv_values(".env.folders")
+config = dotenv_values("../.env.folders")
 
 TEMP_FOLDER = config['TEMP_FOLDER']
 OUTPUT_FOLDER = config['OUTPUT_FOLDER']
