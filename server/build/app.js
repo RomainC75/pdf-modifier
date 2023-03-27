@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
 });
 
 app.post(
-  "/process-pdf/:socketId",
+  "/process-pdf/:socketId/:date",
   multerConfig.array("files"),
   async (req, res) => {
     try {
@@ -70,12 +70,14 @@ app.post(
       );
 
       console.log("=> ", req.files);
+      console.log("req.body : ", req.params.date)
+      const date = req.params.date
       // add the job to the queue
       // await pdfQueue.add({ pdfData });
 
       const originalNames = req.files.map(file=>file.originalname)
       console.log("ORIGINAL NAMES : ", originalNames)
-      await redisClient.rPush("pdf-to-handle", JSON.stringify(originalNames));
+      await redisClient.rPush("pdf-to-handle", JSON.stringify({originalNames,date}));
 
       // let index = 0;
       // const id = setInterval(async () => {

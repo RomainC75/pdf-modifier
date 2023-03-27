@@ -16,46 +16,45 @@
   </head>
   <script type="text/javascript">
     window.onload = function () {
-      
       let socketid = undefined;
-      
+
       const sockett = io("http://localhost:5000", { path: "/socket.io" });
       const socket = io("http://localhost:5000");
-      
 
-      
       let progressBar = document.getElementById("progressBar");
-      
+
       socket.on("connect", function () {
-          console.log("Connected!");
-          socketid = socket.id;
-          console.log("ID: " + socketid);
-        });
-        socket.on("update progress", function (perecent) {
-            //do something with percent
-            console.log("Got perecent: " + perecent);
-            progressBar.style.width = perecent + "%";
-        });
-        
-        let mainForm = document.getElementById("mainForm")
-        const input = document.getElementById("fileInput")
-        console.log('input : ', input.files)
+        console.log("Connected!");
+        socketid = socket.id;
+        console.log("ID: " + socketid);
+      });
+      socket.on("update progress", function (perecent) {
+        //do something with percent
+        console.log("Got perecent: " + perecent);
+        progressBar.style.width = perecent + "%";
+      });
+
+      let mainForm = document.getElementById("mainForm");
+      const input = document.getElementById("fileInput");
+      console.log("input : ", input.files);
 
       mainForm.onsubmit = function (event) {
         event.preventDefault();
-        console.log('event',event)
+        console.log("event", event);
 
+
+        const data = new FormData()
         
-        const data = new FormData();
         for (const file of input.files) {
-          data.append('files', file, file.name);
+          data.append("files", file, file.name);
         }
-        console.log('=> data : ', data)
 
-        fetch("/process-pdf/" + socketid, {
+        console.log("=> data : ", data);
+        const date = document.querySelector('input[name="date"]:checked').value;
+        
+        fetch(`/process-pdf/${socketid}/${date}`, {
           method: "POST",
-          body: data
-          
+          body: data,
         }).then((response) => {
           setTimeout(function () {
             progressBar.style.width = "0%";
@@ -66,15 +65,49 @@
   </script>
 
   <body>
-    <form action="/upload" id="mainForm" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" multiple id="fileInput"/>
+    <form
+      action="/upload"
+      id="mainForm"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <div>
+        <input type="radio" id="huey" name="date" value="default" checked />
+        <label for="huey">Dernier jour du mois</label>
+      </div>
+
+      <div>
+        <input type="radio" id="dewey" name="date" value="today" />
+        <label for="dewey">Aujourd'hui</label>
+      </div>
+
+      <div>
+        <input type="radio" id="louie" name="date" value="custom" />
+        <label for="louie">Custom</label>
+      </div>
+
+      <input type="file" name="file" multiple id="fileInput" />
       <input type="submit" value="Upload" />
     </form>
 
-
-    <div class="progress" style = "width: 50vw; margin-top: 10px; margin-right: 1vw; background-color: grey;">
-        <div class="progress-bar" id = "progressBar" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <div
+      class="progress"
+      style="
+        width: 50vw;
+        margin-top: 10px;
+        margin-right: 1vw;
+        background-color: grey;
+      "
+    >
+      <div
+        class="progress-bar"
+        id="progressBar"
+        role="progressbar"
+        aria-label="Basic example"
+        aria-valuenow="0"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
     </div>
-
   </body>
 </html>
