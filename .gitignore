@@ -6,3 +6,5 @@ server/build/uploads/*
 
 **/*/node_modules
 .env
+*.zip
+*.pdf
