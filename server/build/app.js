@@ -25,22 +25,27 @@ const io = new Server(httpServer, {
 console.log("=> REDIS URL", REDIS_URL)
 // const pdfQueue = new Bull("pdfQueue", REDIS_URL);
 const redisClient = redis.createClient({ url: REDIS_URL });
-const redisClient_subscribe = redis.createClient({ url: REDIS_URL });
+const redisClient_progression = redis.createClient({ url: REDIS_URL });
+const redisClient_report = redis.createClient({ url: REDIS_URL });
 
 redisClient.on('error', err => console.log('Redis Client Error', err));
-redisClient_subscribe.on('error', err => console.log('Redis Client Error', err));
+redisClient_progression.on('error', err => console.log('Redis Client Error', err));
+redisClient_report.on('error', err => console.log('Redis Client Error', err));
 
 redisClient.connect();
-redisClient_subscribe.connect();
+redisClient_progression.connect();
+redisClient_report.connect();
 
 // , return_buffers: true
 redisClient.on('connect', function(){
-  console.log('Connected to redis instance');
+  console.log('Connected to redis queue instance');
 });
-redisClient_subscribe.on('connect', function(){
-  console.log('Connected to redis instance');
+redisClient_progression.on('connect', function(){
+  console.log('Connected to redis instance : progression');
 });
-
+redisClient_report.on('connect', function(){
+  console.log('Connected to redis instance : report');
+});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -115,10 +120,16 @@ app.post(
 );
 
 
-redisClient_subscribe.subscribe('handling_process', (message)=>{
+redisClient_progression.subscribe('progression', (message)=>{
   const values = JSON.parse(message)
+  console.log("===========PROGRESSION : ", values)
   const percent = ((parseInt(values[0]) + 1) / parseInt(values[1])) * 100;
-  io.emit("update progress", percent);
+  io.emit("progression", percent);
+});
+
+redisClient_report.subscribe('report', (message)=>{
+  const values = JSON.parse(message)
+  io.emit("report", values);
 });
 
 

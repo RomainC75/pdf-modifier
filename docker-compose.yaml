@@ -31,7 +31,7 @@ services:
       - TEMP_FOLDER=./app/data/temp/
       - OUTPUT_FOLDER=./app/data/output/
       - STAMP_FOLDER=./app/data/stamps/
-    command: python3 /worker/app/test.py
+    command: python3 /worker/app/app.py
     volumes:
       - $PWD/pdf_handler/app:/worker/app
     env_file:

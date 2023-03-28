@@ -8,3 +8,5 @@ from utils.insert_text_inside_forms import fill_pdf
 
 from utils.extract_secu import SecuExtractor
 from utils.pdf_handler import PdfHandler
+
+from utils.redis.index import redis_db, publish

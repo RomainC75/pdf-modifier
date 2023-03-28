@@ -1,4 +1,4 @@
-import redis
+from utils import redis_db
 import os
 import requests
 import shutil
@@ -6,15 +6,9 @@ import json
 from handle_core import handle_core
 from time import sleep
 
-REDIS_URL = os.environ.get('REDIS_URL')
 CHANNEL = "pdf-to-handle"
 TOKEN = os.environ.get("STATIC_TOKEN")
 print(f"TOKEN : {TOKEN}")
-
-def redis_db():
-    db = redis.Redis.from_url(REDIS_URL)
-    db.ping()
-    return db
 
 def redis_queue_pop(db):
     _, message_json = db.brpop(CHANNEL)
@@ -42,14 +36,14 @@ def process_message(obj_message):
 
 def main():
     db = redis_db()
-    db_publish = redis_db()
+    # db_publish = redis_db()
     while True:
         message_json = redis_queue_pop(db) 
         process_message(message_json)
-        handle_core(db_publish, message_json["date"])
-        for i in range(4):
-            db_publish.publish('handling_process',json.dumps([i,4]))
-            sleep(1)
+        handle_core(message_json["date"])
+        # for i in range(4):
+        #     db_publish.publish('handling_process',json.dumps([i,4]))
+        #     sleep(1)
 
 if __name__ == '__main__':
     main()

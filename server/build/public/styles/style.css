@@ -1,0 +1,35 @@
+h1{
+    text-align: center;
+}
+
+.form_container{
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+.progress{
+    max-width: 50%;
+    margin: 0 auto !important;
+    background-color: grey;
+}
+
+.report{
+    display: none;
+    max-width: 600px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    justify-content: space-between;
+    margin:30px auto
+}
+
+.total_container{
+    color:blue;
+}
+
+.no_error_container{
+    color:green;
+}
+
+.error_container{
+    color:red;
+}

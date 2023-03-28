@@ -1,6 +1,8 @@
 from os import path, mkdir
+from utils import redis_db, publish
 import os
 from glob import glob
+import json
 from dotenv import dotenv_values
 from tqdm import tqdm
 import shutil
@@ -15,7 +17,9 @@ from utils import \
 
 #test working folders 
 
-def handle_core(db_publish, selectedDate):
+def handle_core(selectedDate):
+    db_progression = redis_db()
+    db_report = redis_db()
     
     def handle_error(path):
         print("==> Error :")
@@ -41,8 +45,10 @@ def handle_core(db_publish, selectedDate):
     
 
     pdfPaths = glob(os.environ['DOCS_FOLDER']+'*.pdf')
-    print(f"==> pdfPaths : {pdfPaths}", flush=True)
-    for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
+    
+    # for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
+    for index, pdfPath in enumerate(pdfPaths):
+        print(f"==> pdfPaths : {pdfPath}", flush=True)
         try:
             pathFilename = path.split(pdfPath)
             siret, lastname, firstname, date = get_infos_from_filename(pathFilename[1])
@@ -84,12 +90,19 @@ def handle_core(db_publish, selectedDate):
             error_file_names.append(pdfPath)
             create_folder(f'{os.environ["OUTPUT_FOLDER"]}00_errors')
             shutil.copy(pdfPath, f'{os.environ["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
-
+        
+        publish(db_progression,"progression", [index,len(pdfPaths)])        
 
     print('\n======Results======\n')
     print(f'PDF handled => {len(pdfPaths)}')
     print(f'No Error => {len(pdfPaths)-len(error_file_names)}')
     print(f'Errors => {len(error_file_names)}')
+
+    publish(db_report, "report", {
+        "pdf_handled": len(pdfPaths),
+        "no_errors": len(pdfPaths)-len(error_file_names),
+        "errors": len(error_file_names)
+    })
     if len(error_file_names)>0:
         for name in error_file_names:
             print(f'==>{name}')

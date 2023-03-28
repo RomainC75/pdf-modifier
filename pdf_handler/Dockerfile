@@ -18,4 +18,4 @@ RUN pip3 install redis rq requests pytest-shutil
 RUN pip freeze
 
 RUN pwd
-CMD ["python3", "/app/main.py"]
+CMD [ "python3", "/worker/app/app.py" ]
