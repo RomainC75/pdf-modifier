@@ -10,3 +10,4 @@ from utils.extract_secu import SecuExtractor
 from utils.pdf_handler import PdfHandler
 
 from utils.redis.index import redis_db, publish
+from utils.zip import zip_and_remove_output

@@ -1,10 +1,9 @@
-from utils import redis_db
+from utils import redis_db, zip_and_remove_output
 import os
 import requests
 import shutil
 import json
 from handle_core import handle_core
-from time import sleep
 
 CHANNEL = "pdf-to-handle"
 TOKEN = os.environ.get("STATIC_TOKEN")
@@ -38,12 +37,13 @@ def main():
     db = redis_db()
     # db_publish = redis_db()
     while True:
-        message_json = redis_queue_pop(db) 
+        message_json = redis_queue_pop(db)
         process_message(message_json)
         handle_core(message_json["date"])
         # for i in range(4):
         #     db_publish.publish('handling_process',json.dumps([i,4]))
         #     sleep(1)
+        zip_and_remove_output()
 
 if __name__ == '__main__':
     main()
