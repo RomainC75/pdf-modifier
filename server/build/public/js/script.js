@@ -29,8 +29,6 @@ window.onload = function () {
       console.log("xxx : ", Object.keys(report))
       console.log(report.pdf_handled, report.no_errors, report.errors)
       displayReport(report)
-      console.log("_______________________")
-      
     });
 
     let mainForm = document.getElementById("mainForm");
@@ -39,9 +37,7 @@ window.onload = function () {
 
     mainForm.onsubmit = function (event) {
       event.preventDefault();
-      console.log("event", event);
-
-
+      console.log("event", event)
       const data = new FormData()
       
       for (const file of input.files) {

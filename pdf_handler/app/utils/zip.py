@@ -1,7 +1,7 @@
 import shutil
 import os
 
-zip_file_name = './app/data/pdf_result.zip'
+zip_file_name = './app/data/pdf_result'
 output_folder = './app/data/output'
 docs_folder = './app/data/docs'
 

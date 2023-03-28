@@ -10,7 +10,7 @@ TOKEN = os.environ.get("STATIC_TOKEN")
 print(f"TOKEN : {TOKEN}")
 
 def redis_queue_pop(db):
-    _, message_json = db.brpop(CHANNEL)
+    _, message_json = db.blpop(CHANNEL)
     return json.loads(message_json.decode("utf-8"))
 
 def getFile(name):
@@ -21,10 +21,23 @@ def getFile(name):
     else:
         print('Image Couldn\'t be retrieved')
 
+def postFile():
+    url="http://server:5000/upload-result/"
+    with open('./app/data/pdf_result.zip', 'rb') as f:
+        files = {'file': f.read()}
+        values = {'DB': 'photcat', 'OUT': 'csv', 'SHORT': 'short'}
+        r = requests.post(url, files=files, data=values, headers={'Authorization': f"Bearer {TOKEN}"})
+        print(f"==> result upload Status : {r.status_code}")
+
+#===============================
+
 def save_file(name, raw):
     with open(f"app/data/docs/{name}",'wb') as f:
             shutil.copyfileobj(raw, f)
             print('Image sucessfully Downloaded: ',name)
+
+def delete_result_file():
+    os.remove('./app/data/pdf_result.zip')
 
 def process_message(obj_message):
     utf_names=obj_message["originalNames"]
@@ -35,7 +48,6 @@ def process_message(obj_message):
 
 def main():
     db = redis_db()
-    # db_publish = redis_db()
     while True:
         message_json = redis_queue_pop(db)
         process_message(message_json)
@@ -44,6 +56,9 @@ def main():
         #     db_publish.publish('handling_process',json.dumps([i,4]))
         #     sleep(1)
         zip_and_remove_output()
+        postFile()
+        delete_result_file()
+
 
 if __name__ == '__main__':
     main()

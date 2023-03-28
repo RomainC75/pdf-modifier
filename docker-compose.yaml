@@ -36,3 +36,4 @@ services:
       - $PWD/pdf_handler/app:/worker/app
     env_file:
       - .env
+
