@@ -19,7 +19,7 @@ const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5000",
+    origin: "*",
     methods: ["GET", "POST"],
   },
   path: "/socket.io",
