@@ -3,6 +3,16 @@ const User = require("../models/user.model");
 const AuthorizedUser = require("../models/authorizedUser.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const authentication = require('../middlewares/authentication.mid')
+
+
+router.get("/verify", authentication, (req,res,next)=> {
+    try {
+        res.status(200).json({message:"user authenticated"})
+    } catch (error) {
+        next(error)
+    }
+})
 
 router.get("/signup", (req, res, next) => {
   try {

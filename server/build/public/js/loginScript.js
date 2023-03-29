@@ -21,6 +21,7 @@ window.onload = function () {
         console.log("ans : ",ans)
         if('token' in ans){
             localStorage.setItem("token",ans.token)
+            window.location = '/';  
         }else{
             const errorEl = document.getElementById("error")
             errorEl.textContent=ans.message
