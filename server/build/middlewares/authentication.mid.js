@@ -4,7 +4,9 @@ const User = require('../models/user.model')
 
 router.use( async (req,res,next)=>{
     try{
+        console.log('HEADSERS : ', req.headers)
         const token = req.headers.authorization.split(' ')[1]
+        
         const decodedToken = jwt.verify(token,process.env.TOKEN_SECRET)
         const user = await User.findById(decodedToken.id)
         if(user===null){
