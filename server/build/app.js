@@ -12,10 +12,12 @@ const staticProtectorMid = require("./middlewares/staticProtector.mid");
 const errorHandler = require("./error-handling");
 const redis = require("redis");
 const {sendEmail} = require("./tools/email")
-
+const missingFolderHandler = require('./tools/missingFolderHandler')
 
 const PORT = process.env.PORT || 5000;
 const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
+
+missingFolderHandler()
 
 const io = new Server(httpServer, {
   cors: {

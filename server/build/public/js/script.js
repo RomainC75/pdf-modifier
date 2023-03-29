@@ -5,11 +5,14 @@ const displayReport = (data) =>{
     document.getElementsByClassName("errors")[0].textContent=data.errors
 }
 
+
+
 window.onload = function () {
     let socketid = undefined;
-
-    const sockett = io("http://localhost:5000", { path: "/socket.io" });
-    const socket = io("http://localhost:5000");
+    const url = window.location.href
+    console.log("url : ", url)
+    const sockett = io(url, { path: "/socket.io" });
+    const socket = io(url);
 
     let progressBar = document.getElementById("progressBar");
 

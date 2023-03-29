@@ -11,3 +11,4 @@ from utils.pdf_handler import PdfHandler
 
 from utils.redis.index import redis_db, publish
 from utils.zip import zip_and_remove_output
+from utils.missing_folder_handler import missing_folder_handler

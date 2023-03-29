@@ -1,4 +1,4 @@
-from utils import redis_db, zip_and_remove_output
+from utils import redis_db, zip_and_remove_output,missing_folder_handler
 import os
 import requests
 import shutil
@@ -7,7 +7,8 @@ from handle_core import handle_core
 
 CHANNEL = "pdf-to-handle"
 TOKEN = os.environ.get("STATIC_TOKEN")
-print(f"TOKEN : {TOKEN}")
+
+missing_folder_handler()
 
 def redis_queue_pop(db):
     _, message_json = db.blpop(CHANNEL)
@@ -19,7 +20,7 @@ def getFile(name):
     if res.status_code == 200:
         save_file(name, res.raw)
     else:
-        print('Image Couldn\'t be retrieved')
+        print('Image Couldn\'t be retrieved',flush=True)
 
 def postFile():
     url="http://server:5000/upload-result/"
@@ -27,7 +28,7 @@ def postFile():
         files = {'file': f.read()}
         values = {'DB': 'photcat', 'OUT': 'csv', 'SHORT': 'short'}
         r = requests.post(url, files=files, data=values, headers={'Authorization': f"Bearer {TOKEN}"})
-        print(f"==> result upload Status : {r.status_code}")
+        print(f"==> result upload Status : {r.status_code}",flush=True)
 
 #===============================
 
