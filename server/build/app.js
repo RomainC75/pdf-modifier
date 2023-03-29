@@ -17,6 +17,8 @@ const missingFolderHandler = require('./tools/missingFolderHandler')
 const PORT = process.env.PORT || 5000;
 const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
 
+require('./db')
+
 missingFolderHandler()
 
 const io = new Server(httpServer, {
@@ -74,6 +76,8 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 });
+
+app.use("/auth",require("./router/auth.router"))
 
 app.post(
   "/process-pdf/:socketId/:date",

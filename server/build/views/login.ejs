@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+    <script src="/js/loginScript.js"></script>
+
+</head>
+<body>
+    <div class="form_container" >
+        <h1>Login</h1>
+        <form action="/auth/signup" method="POST" id="login_form">
+            <div>
+                <label for="email">email</label>
+                <input type="text" id="name" name="email">
+            </div>
+            <div>
+                <label for="password">password</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <p id="error" class="error_container"></p>
+</body>
+</html>

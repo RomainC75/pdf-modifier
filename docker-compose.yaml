@@ -7,8 +7,6 @@ services:
     
   server:
     build: ./server
-    # links:
-    #   - redis
     environment:
       - REDIS_URL=redis://redis:6379
       - PORT=5000
@@ -22,9 +20,6 @@ services:
 
   pdf_handler:
     build: ./pdf_handler
-    # links:
-    #   - redis
-    #   - server
     environment:
       - REDIS_URL=redis://redis:6379
       - DOCS_FOLDER=./app/data/docs/
