@@ -61,6 +61,7 @@ window.onload = function () {
     const date = document.querySelector('input[name="date"]:checked').value;
     fetch(`/process-pdf/${socketid}/${date}`, {
       method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
       body: data,
     }).then((response) => {
       setTimeout(function () {

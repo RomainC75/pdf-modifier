@@ -5,6 +5,10 @@ pdf_handler/utils/SIRET_CONVERTOR.py
 server/build/uploads/*
 
 **/*/node_modules
+
 .env
+.env.dev
+.env.prod
+
 *.zip
 *.pdf

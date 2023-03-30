@@ -22,8 +22,9 @@ def getFile(name):
     else:
         print('Image Couldn\'t be retrieved',flush=True)
 
-def postFile():
-    url="http://server:5000/upload-result/"
+def postFile(user_infos):
+    print(f'POSTFILE : {user_infos["email"]}')
+    url=f'http://server:5000/upload-result/{user_infos["email"]}'
     with open('./app/data/pdf_result.zip', 'rb') as f:
         files = {'file': f.read()}
         values = {'DB': 'photcat', 'OUT': 'csv', 'SHORT': 'short'}
@@ -53,11 +54,13 @@ def main():
         message_json = redis_queue_pop(db)
         process_message(message_json)
         handle_core(message_json["date"])
+        # print(f'==> USER { message_json["user"] }',flush=True)
+        print(f'==> USER { message_json["user"] }',flush=True)
         # for i in range(4):
         #     db_publish.publish('handling_process',json.dumps([i,4]))
         #     sleep(1)
         zip_and_remove_output()
-        postFile()
+        postFile(message_json["user"])
         delete_result_file()
 
 

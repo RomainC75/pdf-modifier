@@ -3,7 +3,7 @@ const Bull = require("bull");
 const path = require("path");
 const morgan = require("morgan");
 const multerConfig = require("./config/multer.config");
-const multerResultConfig = require("./config/multerResult.config")
+const multerResultConfig = require("./config/multerResult.config");
 const app = express();
 const httpServer = require("http").createServer(app);
 const { Server } = require("socket.io");
@@ -11,15 +11,16 @@ const socketMiddleware = require("./middlewares/socket.mid");
 const staticProtectorMid = require("./middlewares/staticProtector.mid");
 const errorHandler = require("./error-handling");
 const redis = require("redis");
-const {sendEmail} = require("./tools/email")
-const missingFolderHandler = require('./tools/missingFolderHandler')
+const { sendEmail } = require("./tools/email");
+const missingFolderHandler = require("./tools/missingFolderHandler");
+const authentication = require("./middlewares/authentication.mid");
 
 const PORT = process.env.PORT || 5000;
 const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
 
-require('./db')
+require("./db");
 
-missingFolderHandler()
+missingFolderHandler();
 
 const io = new Server(httpServer, {
   cors: {
@@ -29,29 +30,31 @@ const io = new Server(httpServer, {
   path: "/socket.io",
 });
 
-console.log("=> REDIS URL", REDIS_URL)
+console.log("=> REDIS URL", REDIS_URL);
 // const pdfQueue = new Bull("pdfQueue", REDIS_URL);
 const redisClient = redis.createClient({ url: REDIS_URL });
 const redisClient_progression = redis.createClient({ url: REDIS_URL });
 const redisClient_report = redis.createClient({ url: REDIS_URL });
 
-redisClient.on('error', err => console.log('Redis Client Error', err));
-redisClient_progression.on('error', err => console.log('Redis Client Error', err));
-redisClient_report.on('error', err => console.log('Redis Client Error', err));
+redisClient.on("error", (err) => console.log("Redis Client Error", err));
+redisClient_progression.on("error", (err) =>
+  console.log("Redis Client Error", err)
+);
+redisClient_report.on("error", (err) => console.log("Redis Client Error", err));
 
 redisClient.connect();
 redisClient_progression.connect();
 redisClient_report.connect();
 
 // , return_buffers: true
-redisClient.on('connect', function(){
-  console.log('Connected to redis queue instance');
+redisClient.on("connect", function () {
+  console.log("Connected to redis queue instance");
 });
-redisClient_progression.on('connect', function(){
-  console.log('Connected to redis instance : progression');
+redisClient_progression.on("connect", function () {
+  console.log("Connected to redis instance : progression");
 });
-redisClient_report.on('connect', function(){
-  console.log('Connected to redis instance : report');
+redisClient_report.on("connect", function () {
+  console.log("Connected to redis instance : report");
 });
 
 app.set("view engine", "ejs");
@@ -77,10 +80,11 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use("/auth",require("./router/auth.router"))
+app.use("/auth", require("./router/auth.router"));
 
 app.post(
   "/process-pdf/:socketId/:date",
+  authentication,
   multerConfig.array("files"),
   async (req, res) => {
     try {
@@ -88,16 +92,20 @@ app.post(
         '"=======================================>',
         req.params.socketId
       );
+      const user = req.user;
 
       console.log("=> ", req.files);
-      console.log("req.body : ", req.params.date)
-      const date = req.params.date
+      console.log("req.body : ", req.params.date);
+      const date = req.params.date;
       // add the job to the queue
       // await pdfQueue.add({ pdfData });
 
-      const originalNames = req.files.map(file=>file.originalname)
-      console.log("ORIGINAL NAMES : ", originalNames)
-      await redisClient.rPush("pdf-to-handle", JSON.stringify({originalNames,date}));
+      const originalNames = req.files.map((file) => file.originalname);
+      console.log("ORIGINAL NAMES : ", originalNames);
+      await redisClient.rPush(
+        "pdf-to-handle",
+        JSON.stringify({ originalNames, date, user })
+      );
       res.status(202).json({ message: "PDF processing job added to queue" });
     } catch (error) {
       console.log("ERROR : ", error);
@@ -105,39 +113,41 @@ app.post(
   }
 );
 
-app.post("/upload-result/", staticProtectorMid, multerResultConfig, async(req,res,next)=>{
-  try {
-    console.log("====> FILE RECEIVED BY SERVER !")
-    const filename = req.file.filename
-    console.log("====> req.file : ", filename)
-    const email = "rom.chenard@gmail.com"
-    
-    sendEmail(
-      email,
-      "AER-PDF zip file",
-      "AER-PDF zip file :",
-      `<h1>Click on this link to get your file : </h1> <a href="${process.env.BACKENDADDRESS}/results/${filename}">Link</a>`
-    );
-    res.status(201).json({message: "file uploaded"})
-  } catch (error) {
-    next(error)
+app.post(
+  "/upload-result/:email",
+  staticProtectorMid,
+  multerResultConfig,
+  async (req, res, next) => {
+    try {
+      console.log("====> FILE RECEIVED BY SERVER !");
+      const filename = req.file.filename;
+      console.log("====> req.file : ", filename);
+      const email = req.params.email
+      console.log("==> BACKENDADDRESS : ", process.env.BACKENDADDRESS)
+      sendEmail(
+        email,
+        "AER-PDF zip file",
+        "AER-PDF zip file :",
+        `<h1>Click on this link to get your file : </h1> <a href="${process.env.BACKENDADDRESS}/results/${filename}">Link</a>`
+      );
+      res.status(201).json({ message: "file uploaded" });
+    } catch (error) {
+      next(error);
+    }
   }
-})
+);
 
-
-redisClient_progression.subscribe('progression', (message)=>{
-  const values = JSON.parse(message)
-  console.log("===========PROGRESSION : ", values)
+redisClient_progression.subscribe("progression", (message) => {
+  const values = JSON.parse(message);
+  console.log("===========PROGRESSION : ", values);
   const percent = ((parseInt(values[0]) + 1) / parseInt(values[1])) * 100;
   io.emit("progression", percent);
 });
 
-redisClient_report.subscribe('report', (message)=>{
-  const values = JSON.parse(message)
+redisClient_report.subscribe("report", (message) => {
+  const values = JSON.parse(message);
   io.emit("report", values);
 });
-
-
 
 errorHandler(app);
 
