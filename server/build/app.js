@@ -14,6 +14,7 @@ const redis = require("redis");
 const { sendEmail } = require("./tools/email");
 const missingFolderHandler = require("./tools/missingFolderHandler");
 const authentication = require("./middlewares/authentication.mid");
+const fs = require('fs')
 
 const PORT = process.env.PORT || 5000;
 const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
@@ -93,15 +94,8 @@ app.post(
         req.params.socketId
       );
       const user = req.user;
-
-      console.log("=> ", req.files);
-      console.log("req.body : ", req.params.date);
       const date = req.params.date;
-      // add the job to the queue
-      // await pdfQueue.add({ pdfData });
-
       const originalNames = req.files.map((file) => file.originalname);
-      console.log("ORIGINAL NAMES : ", originalNames);
       await redisClient.rPush(
         "pdf-to-handle",
         JSON.stringify({ originalNames, date, user })
@@ -136,6 +130,27 @@ app.post(
     }
   }
 );
+
+app.get("/results/:filename", (req, res) => {
+  const filePath = path.join(__dirname, "results", req.params.filename);
+  console.log('filePath')
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send("File not found");
+  }
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error(`Error downloading file ${filePath}: ${err}`);
+    } else {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`Error deleting file ${filePath}: ${err}`);
+        } else {
+          console.log(`File ${filePath} deleted successfully`);
+        }
+      });
+    }
+  });
+});
 
 redisClient_progression.subscribe("progression", (message) => {
   const values = JSON.parse(message);
