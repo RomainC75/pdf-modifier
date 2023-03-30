@@ -25,7 +25,7 @@ def getFile(name):
 def postFile(user_infos):
     print(f'POSTFILE : {user_infos["email"]}')
     url=f'http://server:5000/upload-result/{user_infos["email"]}'
-    with open('./app/data/pdf_result.zip', 'rb') as f:
+    with open('./app/data/pdf_result.tar', 'rb') as f:
         files = {'file': f.read()}
         values = {'DB': 'photcat', 'OUT': 'csv', 'SHORT': 'short'}
         r = requests.post(url, files=files, data=values, headers={'Authorization': f"Bearer {TOKEN}"})
@@ -39,7 +39,7 @@ def save_file(name, raw):
             print('Image sucessfully Downloaded: ',name)
 
 def delete_result_file():
-    os.remove('./app/data/pdf_result.zip')
+    os.remove('./app/data/pdf_result.tar')
 
 def process_message(obj_message):
     utf_names=obj_message["originalNames"]
