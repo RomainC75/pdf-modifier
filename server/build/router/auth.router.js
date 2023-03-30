@@ -8,7 +8,7 @@ const authentication = require('../middlewares/authentication.mid')
 
 router.get("/verify", authentication, (req,res,next)=> {
     try {
-        res.status(200).json({message:"user authenticated"})
+        res.status(200).json({message:"user authenticated",infos:req.user})
     } catch (error) {
         next(error)
     }
