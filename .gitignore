@@ -2,7 +2,13 @@ pdf_handler/app/data/
 pdf_handler/.venv/
 pdf_handler/utils/SIRET_CONVERTOR.py
 
+**/*/__pycache__/
+pdf_handler/app/__pycache__
+pdf_handler/utils/__pycache__
+*.py[cod]
+
 server/build/uploads/*
+
 
 **/*/node_modules
 
