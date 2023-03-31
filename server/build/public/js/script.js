@@ -6,6 +6,14 @@ const displayReport = (data) => {
   document.getElementsByClassName("errors")[0].textContent = data.errors;
 };
 
+const getCustomDate = () =>{
+  const selection = document.querySelector('input[name="date"]:checked').value;
+  if(selection==='custom'){
+    return document.querySelector("input[name=custom-date]").value
+  }
+  return selection
+}
+
 window.onload = function () {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -48,7 +56,7 @@ window.onload = function () {
 
   let mainForm = document.getElementById("mainForm");
   const input = document.getElementById("fileInput");
-  console.log("input : ", input.files);
+
 
   mainForm.onsubmit = function (event) {
     event.preventDefault();
@@ -57,8 +65,7 @@ window.onload = function () {
     for (const file of input.files) {
       data.append("files", file, file.name);
     }
-    console.log("=> data : ", data);
-    const date = document.querySelector('input[name="date"]:checked').value;
+    const date = getCustomDate()
     fetch(`/process-pdf/${socketid}/${date}`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
