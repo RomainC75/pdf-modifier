@@ -14,7 +14,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 # errors where raised because of redis dependancies, so I tried this way
-RUN pip3 install redis rq requests pytest-shutil
+RUN pip3 install redis rq requests pytest-shutil pymongo 
 RUN pip freeze
 
 RUN pwd

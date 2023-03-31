@@ -4,6 +4,7 @@ import requests
 import shutil
 import json
 from handle_core import handle_core
+from db.index import get_database
 
 CHANNEL = "pdf-to-handle"
 TOKEN = os.environ.get("STATIC_TOKEN")
@@ -50,10 +51,11 @@ def process_message(obj_message):
 
 def main():
     db = redis_db()
+    
     while True:
         message_json = redis_queue_pop(db)
         process_message(message_json)
-        handle_core(message_json["date"])
+        handle_core(message_json["date"], message_json['user'])
         # print(f'==> USER { message_json["user"] }',flush=True)
         print(f'==> USER { message_json["user"] }',flush=True)
         # for i in range(4):

@@ -14,12 +14,15 @@ from utils import \
     merge_pdfs, \
     SIRET_CONVERTOR, \
     get_selected_date
+from db.index import get_database, insert_pdf_log
+import datetime
 
 #test working folders 
 
-def handle_core(selectedDate):
+def handle_core(selectedDate, user_info):
     db_progression = redis_db()
     db_report = redis_db()
+    my_collection = get_database()
     
     def handle_error(path):
         print("==> Error :")
@@ -43,8 +46,8 @@ def handle_core(selectedDate):
     # ============================
     sign_day = get_selected_date(selectedDate)
     
-
     pdfPaths = glob(os.environ['DOCS_FOLDER']+'*.pdf')
+    now_date = datetime.datetime.now()
     
     # for pdfPath in tqdm(pdfPaths,desc="pdf documents"):
     for index, pdfPath in enumerate(pdfPaths):
@@ -74,7 +77,6 @@ def handle_core(selectedDate):
                 sign_last_day_of_month=True)
 
             pdfhandler.insert_images_and_siret()
-
             completed_file = pdfhandler.fill_pdf()
 
             new_merge_folder_path = copy_to_merge_folder(completed_file, society_folder)
@@ -83,11 +85,13 @@ def handle_core(selectedDate):
                     'folder_path': new_merge_folder_path,
                     'folder_name': f'{society_name}_AER_{month}_{year}',
                     })
+            insert_pdf_log(my_collection, pdfPath, user_info, now_date, True)
 
         except Exception as inst:
             # if error => copy to the "error" folder
             print('==>ERROR : ',inst)
             error_file_names.append(pdfPath)
+            insert_pdf_log(my_collection, pdfPath, user_info,  now_date, False)
             create_folder(f'{os.environ["OUTPUT_FOLDER"]}00_errors')
             shutil.copy(pdfPath, f'{os.environ["OUTPUT_FOLDER"]}00_errors/{pathFilename[1]}')
         
