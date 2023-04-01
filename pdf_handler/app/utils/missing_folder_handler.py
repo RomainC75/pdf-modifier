@@ -1,8 +1,8 @@
 import os
 
 def missing_folder_handler():
-    folder_names = ["docs","output"]
-    dir_base="./app/data"
+    folder_names = ["docs","output","temp"]
+    dir_base=os.environ["PRIVATE_FOLDER"]
     for name in folder_names:
         path=f"{dir_base}/{name}"
         isExist = os.path.exists(path)

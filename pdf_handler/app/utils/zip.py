@@ -2,9 +2,11 @@ import shutil
 import os
 import zipfile
 
-zip_file_name = './app/data/pdf_result'
-output_folder = './app/data/output'
-docs_folder = './app/data/docs'
+zip_file_name = os.environ['PRIVATE_FOLDER']+'/'+os.environ['PDF_RESULT_BASENAME']
+output_folder = os.environ["OUTPUT_FOLDER"]
+docs_folder = os.environ["DOCS_FOLDER"]
+
+# os.environ["PRIVATE_FOLDER"]
 
 def zip_output():
     name = shutil.make_archive(zip_file_name, 'zip', output_folder)

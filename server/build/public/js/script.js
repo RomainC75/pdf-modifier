@@ -6,6 +6,10 @@ const displayReport = (data) => {
   document.getElementsByClassName("errors")[0].textContent = data.errors;
 };
 
+const hideReport = () =>{
+  document.getElementsByClassName("report")[0].style.display = "none";
+}
+
 const getCustomDate = () =>{
   const selection = document.querySelector('input[name="date"]:checked').value;
   if(selection==='custom'){
@@ -59,6 +63,7 @@ window.onload = function () {
 
 
   mainForm.onsubmit = function (event) {
+    hideReport()
     event.preventDefault();
     console.log("event", event);
     const data = new FormData();

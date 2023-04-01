@@ -17,5 +17,6 @@ RUN pip3 install -r requirements.txt
 RUN pip3 install redis rq requests pytest-shutil pymongo 
 RUN pip freeze
 
+
 RUN pwd
 CMD [ "python3", "/worker/app/app.py" ]

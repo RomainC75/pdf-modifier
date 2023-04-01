@@ -30,8 +30,8 @@ def handle_core(selectedDate, user_info):
         raise FileNotFoundError
 
     #test folders and files
-    if not path.exists("./app/data"):
-        handle_error("./app/data")
+    if not path.exists(os.environ['DATA_FOLDER']):
+        handle_error(os.environ['DATA_FOLDER'])
 
 
     stamps = ["signature.png", "stamp.png"]

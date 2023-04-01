@@ -1,35 +1,65 @@
-h1{
-    text-align: center;
-}
-
-.form_container{
-    max-width: 600px;
-    margin: 40px auto;
-}
-
-.progress{
-    max-width: 50%;
-    margin: 0 auto !important;
+@keyframes buttonAnimation {
+  0% {
+    background-color: #3e458e;
+  }
+  100% {
     background-color: grey;
+  }
 }
 
-.report{
-    display: none;
-    max-width: 600px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    justify-content: space-between;
-    margin:30px auto
+h1 {
+  text-align: center;
 }
 
-.total_container{
-    color:blue;
+.form_container {
+  max-width: 600px;
+  margin: 40px auto;
 }
 
-.no_error_container{
-    color:green;
+.progress {
+  max-width: 50%;
+  margin: 0 auto !important;
+  background-color: grey;
 }
 
-.error_container{
-    color:red;
+.report {
+  display: none;
+  max-width: 600px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  justify-content: space-between;
+  margin: 30px auto;
+}
+
+.total_container {
+  color: blue;
+}
+
+.no_error_container {
+  color: green;
+}
+
+.error_container {
+  color: red;
+}
+
+.uploadBtn {
+  padding: 15px 25px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #04aa6d;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.uploadBtn:active {
+  animation: buttonAnimation 1s ease-out 0s ;
+  animation-fill-mode: forwards;
+  /* background-color: #3e8e41; */
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }

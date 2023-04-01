@@ -23,15 +23,30 @@ services:
     build: ./pdf_handler
     environment:
       - REDIS_URL=redis://redis:6379
-      - DOCS_FOLDER=./app/data/docs/
-      - TEMP_FOLDER=./app/data/temp/
-      - OUTPUT_FOLDER=./app/data/output/
+      
+      - DATA_FOLDER=./app/data
       - STAMP_FOLDER=./app/data/stamps/
+
+      - TEMP_FOLDER=./private_data/temp/
+      - DOCS_FOLDER=./private_data/docs/
+      - OUTPUT_FOLDER=./private_data/output/
+      - RESULT_FILE=./private_data/pdf_result.tar
+      - PDF_RESULT_BASENAME=pdf_result
+      - PRIVATE_FOLDER=./private_data
+
     command: python3 /worker/app/app.py
     volumes:
       - $PWD/pdf_handler/app:/worker/app
+      # - type: volume
+      #   source: mydata-{{.Task.Slot}}
+      #   target: /worker/app/data/docs
+      #   volume:
+      #     nocopy: true
     env_file:
       - .env
+    deploy:
+      replicas: 2
+    restart: always
 
   nginx:
     image: nginx:latest
@@ -43,3 +58,8 @@ services:
       - server
 
 # docker compose --env-file .env.prod config
+
+volumes:
+  mydata-1:
+  mydata-2:
+  mydata-3:

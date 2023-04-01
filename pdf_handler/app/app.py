@@ -8,6 +8,8 @@ from db.index import get_database
 
 CHANNEL = "pdf-to-handle"
 TOKEN = os.environ.get("STATIC_TOKEN")
+RESULT_FILE=os.environ['RESULT_FILE']
+DOCS_FOLDER=os.environ['DOCS_FOLDER']
 
 missing_folder_handler()
 
@@ -26,7 +28,8 @@ def getFile(name):
 def postFile(user_infos):
     print(f'POSTFILE : {user_infos["email"]}')
     url=f'http://server:5000/upload-result/{user_infos["email"]}'
-    with open('./app/data/pdf_result.tar', 'rb') as f:
+    # with open('./app/data/pdf_result.tar', 'rb') as f:
+    with open(RESULT_FILE, 'rb') as f:
         files = {'file': f.read()}
         values = {'DB': 'photcat', 'OUT': 'csv', 'SHORT': 'short'}
         r = requests.post(url, files=files, data=values, headers={'Authorization': f"Bearer {TOKEN}"})
@@ -35,12 +38,12 @@ def postFile(user_infos):
 #===============================
 
 def save_file(name, raw):
-    with open(f"app/data/docs/{name}",'wb') as f:
+    with open(f"{DOCS_FOLDER}{name}",'wb') as f:
             shutil.copyfileobj(raw, f)
             print('Image sucessfully Downloaded: ',name)
 
 def delete_result_file():
-    os.remove('./app/data/pdf_result.tar')
+    os.remove(os.environ["RESULT_FILE"])
 
 def process_message(obj_message):
     utf_names=obj_message["originalNames"]
@@ -51,7 +54,7 @@ def process_message(obj_message):
 
 def main():
     db = redis_db()
-    
+    print("==> WORKER launched !",flush=True)
     while True:
         message_json = redis_queue_pop(db)
         process_message(message_json)
