@@ -30,9 +30,10 @@ services:
       - TEMP_FOLDER=./private_data/temp/
       - DOCS_FOLDER=./private_data/docs/
       - OUTPUT_FOLDER=./private_data/output/
-      - RESULT_FILE=./private_data/pdf_result.tar
-      - PDF_RESULT_BASENAME=pdf_result
       - PRIVATE_FOLDER=./private_data
+
+      - RESULT_FILE=./private_data/pdf_result.zip
+      - PDF_RESULT_BASENAME=pdf_result
 
     command: python3 /worker/app/app.py
     volumes:

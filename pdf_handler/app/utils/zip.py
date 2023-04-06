@@ -30,6 +30,7 @@ def remove_folder_content(path):
     os.mkdir(path)
 
 def zip_and_remove_output():
-    tar_output()
+    # tar_output()
+    zipfile_output()
     remove_folder_content(output_folder)
     remove_folder_content(docs_folder)
