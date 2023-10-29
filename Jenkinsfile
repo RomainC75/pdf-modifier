@@ -7,9 +7,20 @@ pipeline {
       }
     }
 
-    stage('') {
-      steps {
-        sh 'ls -la'
+    stage('log') {
+      parallel {
+        stage('log') {
+          steps {
+            sh 'ls -la'
+          }
+        }
+
+        stage('install') {
+          steps {
+            sh 'cd server && npm i && npm run dev'
+          }
+        }
+
       }
     }
 
